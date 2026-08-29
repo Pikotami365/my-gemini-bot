@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude AI — Возможности</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav container">
+    <a href="#top" class="logo">Claude<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#models">Модели</a></li>
+      <li><a href="#capabilities">Возможности</a></li>
+      <li><a href="#tools">Инструменты</a></li>
+      <li><a href="#usecases">Сценарии</a></li>
+      <li><a href="#safety">Безопасность</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">🌙</button>
+  </nav>
+</header>
+
+<main>
+
+  <section id="top" class="hero">
+    <div class="container hero-inner">
+      <p class="eyebrow">Ассистент от Anthropic</p>
+      <h1>Всё, что умеет <span class="accent">Claude AI</span></h1>
+      <p class="hero-sub">
+        Claude — семейство больших языковых моделей от Anthropic: пишет код, анализирует данные,
+        работает с изображениями и документами, использует инструменты, управляет компьютером
+        и помогает в исследованиях, обучении и бизнесе.
+      </p>
+      <div class="hero-actions">
+        <a href="#capabilities" class="btn btn-primary">Смотреть возможности</a>
+        <a href="#models" class="btn btn-ghost">Модели Claude</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="models" class="section">
+    <div class="container">
+      <h2>Семейство моделей</h2>
+      <p class="section-sub">Разные модели — разный баланс скорости, стоимости и глубины рассуждений.</p>
+      <div class="grid grid-4">
+        <div class="card model-card">
+          <h3>Opus</h3>
+          <p class="tag">Максимальная мощность</p>
+          <p>Самая способная модель для сложных многошаговых задач, глубокого анализа и исследовательской работы.</p>
+        </div>
+        <div class="card model-card">
+          <h3>Sonnet</h3>
+          <p class="tag">Баланс</p>
+          <p>Оптимальное соотношение скорости и качества — основная рабочая лошадка для кода, текста и агентных задач.</p>
+        </div>
+        <div class="card model-card">
+          <h3>Fable</h3>
+          <p class="tag">Творчество</p>
+          <p>Модель, ориентированная на нарратив, стиль и креативное письмо.</p>
+        </div>
+        <div class="card model-card">
+          <h3>Haiku</h3>
+          <p class="tag">Скорость</p>
+          <p>Самая быстрая и лёгкая модель для высокочастотных и простых задач в реальном времени.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="capabilities" class="section alt">
+    <div class="container">
+      <h2>Ключевые возможности</h2>
+      <p class="section-sub">Claude — не просто чат-бот, а универсальный ассистент широкого профиля.</p>
+      <div class="grid grid-3">
+
+        <div class="card">
+          <div class="icon">💻</div>
+          <h3>Программирование</h3>
+          <p>Пишет, объясняет, отлаживает и рефакторит код на десятках языков. Понимает большие кодовые базы и архитектуру проектов.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">✍️</div>
+          <h3>Работа с текстом</h3>
+          <p>Пишет статьи, письма, документацию, редактирует стиль и тон, переводит и суммирует длинные тексты.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">🖼️</div>
+          <h3>Зрение</h3>
+          <p>Анализирует изображения, диаграммы, скриншоты, графики и рукописный текст, извлекает и объясняет визуальные данные.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">📄</div>
+          <h3>Длинный контекст</h3>
+          <p>Обрабатывает огромные объёмы текста — целые книги, кодовые репозитории и наборы документов за один запрос.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">🧠</div>
+          <h3>Рассуждения</h3>
+          <p>Расширенное мышление для сложных многошаговых задач: математика, логика, планирование, анализ данных.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">🌍</div>
+          <h3>Многоязычность</h3>
+          <p>Понимает и генерирует текст на десятках языков, включая перевод и локализацию контента.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">📊</div>
+          <h3>Анализ данных</h3>
+          <p>Работает с таблицами, CSV и большими датасетами, строит выводы, находит закономерности и ошибки.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">🎨</div>
+          <h3>Artifacts</h3>
+          <p>Создаёт интерактивные веб-страницы, диаграммы, документы и приложения прямо в диалоге — с мгновенным предпросмотром.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">🔍</div>
+          <h3>Поиск и исследование</h3>
+          <p>Ищет информацию в интернете, читает документы и синтезирует ответы из нескольких источников.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="tools" class="section">
+    <div class="container">
+      <h2>Инструменты и агенты</h2>
+      <p class="section-sub">Claude умеет не только отвечать, но и действовать.</p>
+      <div class="grid grid-2">
+
+        <div class="card wide">
+          <h3>Tool Use / MCP</h3>
+          <p>Вызывает внешние функции и API, подключается к базам данных, календарям, почте и другим сервисам
+             через Model Context Protocol — расширяя возможности за пределы диалога.</p>
+        </div>
+
+        <div class="card wide">
+          <h3>Claude Code</h3>
+          <p>Агент-разработчик в терминале и IDE: читает и правит файлы, запускает команды,
+             коммитит и пушит код, работает с GitHub, тестирует и отлаживает проекты.</p>
+        </div>
+
+        <div class="card wide">
+          <h3>Computer Use</h3>
+          <p>Управляет компьютером как человек: видит экран, двигает курсор, кликает,
+             печатает и заполняет формы — автоматизируя рутинные задачи в интерфейсах.</p>
+        </div>
+
+        <div class="card wide">
+          <h3>Многошаговые агенты</h3>
+          <p>Самостоятельно планирует последовательность действий, вызывает инструменты по цепочке
+             и доводит сложные задачи до результата без пошаговых инструкций.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="usecases" class="section alt">
+    <div class="container">
+      <h2>Сценарии использования</h2>
+      <div class="grid grid-4 compact">
+        <div class="pill">Разработка ПО</div>
+        <div class="pill">Аналитика и BI</div>
+        <div class="pill">Служба поддержки</div>
+        <div class="pill">Контент и маркетинг</div>
+        <div class="pill">Юридический анализ</div>
+        <div class="pill">Научные исследования</div>
+        <div class="pill">Образование</div>
+        <div class="pill">Автоматизация бизнеса</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="safety" class="section">
+    <div class="container safety">
+      <h2>Безопасность и надёжность</h2>
+      <p class="section-sub">
+        Claude разрабатывается Anthropic с упором на безопасность — с использованием Constitutional AI
+        и принципов «полезный, честный, безвредный». Модели проходят проверки на устойчивость,
+        избегают вредных, предвзятых или опасных ответов и прозрачно сообщают о своих ограничениях.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>Сайт создан в ознакомительных целях — обзор возможностей Claude AI от Anthropic.</p>
+    <p class="muted">Не является официальным ресурсом Anthropic.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
