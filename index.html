@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UMED ONLINE — подготовка к ОРТ по химии и биологии</title>
+<meta name="description" content="UMED ONLINE — платформа подготовки к ОРТ по химии и биологии. Выбирай тему, предмет или полный курс. Видеоуроки, 3D-визуализации, опыты и проверка знаний.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-primary:#0D9488;
+    --color-primary-dark:#0B7A70;
+    --color-secondary:#2DD4BF;
+    --color-accent:#EA580C;
+    --color-accent-light:#FB923C;
+    --color-bg:#F5FCFB;
+    --color-ink:#062E2B;
+    --color-ink-2:#0B3B37;
+    --color-fg:#0F2E2C;
+    --color-card:#FFFFFF;
+    --color-muted:#EAF6F4;
+    --color-muted-fg:#4B6664;
+    --color-border:#D3EDE8;
+    --color-chem:#0D9488;
+    --color-bio:#2563EB;
+    --shadow-sm:0 1px 2px rgba(6,46,43,.06);
+    --shadow-md:0 8px 24px rgba(6,46,43,.10);
+    --shadow-lg:0 24px 60px rgba(6,46,43,.16);
+    --radius:18px;
+    --radius-sm:12px;
+    --space-1:8px;--space-2:16px;--space-3:24px;--space-4:32px;--space-5:48px;--space-6:64px;--space-7:96px;
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'DM Sans',system-ui,sans-serif;
+    background:var(--color-bg);
+    color:var(--color-fg);
+    line-height:1.55;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,h4,.font-head{font-family:'Space Grotesk',system-ui,sans-serif;font-weight:700;letter-spacing:-0.01em}
+  img{max-width:100%}
+  a{color:inherit}
+  .container{max-width:1180px;margin:0 auto;padding:0 24px}
+  .visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  ::selection{background:var(--color-secondary);color:var(--color-ink)}
+  button{font-family:inherit}
+
+  /* Buttons */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:14px 26px;border-radius:999px;font-weight:700;font-size:15px;
+    cursor:pointer;border:none;transition:transform .2s var(--ease),box-shadow .2s var(--ease),background .2s var(--ease);
+    text-decoration:none;white-space:nowrap;
+  }
+  .btn:focus-visible{outline:3px solid var(--color-secondary);outline-offset:2px}
+  .btn-accent{background:var(--color-accent);color:#fff;box-shadow:0 10px 24px rgba(234,88,12,.32)}
+  .btn-accent:hover{background:var(--color-accent-light);transform:translateY(-2px)}
+  .btn-primary{background:var(--color-primary);color:#fff;box-shadow:0 10px 24px rgba(13,148,136,.28)}
+  .btn-primary:hover{background:var(--color-primary-dark);transform:translateY(-2px)}
+  .btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+  .btn-ghost:hover{background:rgba(255,255,255,.18)}
+  .btn-outline{background:transparent;color:var(--color-primary);border:1.5px solid var(--color-primary)}
+  .btn-outline:hover{background:var(--color-muted)}
+  .btn-sm{padding:10px 18px;font-size:14px}
+  .btn-block{width:100%}
+
+  /* Header */
+  header.site{
+    position:sticky;top:0;z-index:100;
+    background:rgba(245,252,251,.85);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--color-border);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:76px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:700;font-size:20px}
+  .logo-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--color-primary),var(--color-secondary));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+  .nav-links{display:flex;align-items:center;gap:32px;font-size:15px;font-weight:500}
+  .nav-links a{text-decoration:none;color:var(--color-fg);opacity:.8;transition:opacity .2s}
+  .nav-links a:hover{opacity:1}
+  .nav-actions{display:flex;align-items:center;gap:12px}
+  .nav-toggle{display:none;background:none;border:1px solid var(--color-border);border-radius:10px;width:44px;height:44px;align-items:center;justify-content:center}
+
+  /* Hero */
+  .hero{
+    position:relative;overflow:hidden;color:#fff;
+    background:radial-gradient(1100px 560px at 78% -10%, #12615a 0%, transparent 60%),
+               radial-gradient(900px 500px at 8% 110%, #0e4b46 0%, transparent 55%),
+               linear-gradient(160deg,var(--color-ink) 0%, var(--color-ink-2) 55%, #0c4b46 100%);
+    padding:var(--space-7) 0 var(--space-6);
+  }
+  .hero-grid-bg{position:absolute;inset:0;opacity:.35;
+    background-image:linear-gradient(rgba(45,212,191,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(45,212,191,.14) 1px,transparent 1px);
+    background-size:48px 48px;mask-image:radial-gradient(circle at 70% 20%, black, transparent 70%);
+  }
+  .hero-blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.5;pointer-events:none}
+  .hero .b1{width:420px;height:420px;background:var(--color-secondary);top:-140px;right:-100px;opacity:.25}
+  .hero .b2{width:320px;height:320px;background:var(--color-accent);bottom:-140px;left:-80px;opacity:.18}
+  .hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:var(--space-6);align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(45,212,191,.15);border:1px solid rgba(45,212,191,.4);color:var(--color-secondary);padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:.02em}
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--color-secondary);box-shadow:0 0 0 4px rgba(45,212,191,.25)}
+  .hero h1{font-size:clamp(34px,4.6vw,58px);line-height:1.06;margin:20px 0 18px}
+  .hero h1 span{color:var(--color-secondary)}
+  .hero p.lead{font-size:18px;color:rgba(255,255,255,.82);max-width:520px;margin-bottom:32px}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:36px}
+  .hero-stats{display:flex;gap:var(--space-5);flex-wrap:wrap}
+  .hero-stats .stat b{display:block;font-family:'Space Grotesk';font-size:26px;color:#fff}
+  .hero-stats .stat span{font-size:13px;color:rgba(255,255,255,.65)}
+
+  /* Hero visual: learning path mock */
+  .hero-visual{position:relative}
+  .path-card{
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);
+    border-radius:24px;padding:28px;backdrop-filter:blur(6px);box-shadow:var(--shadow-lg);
+  }
+  .path-card h3{color:#fff;font-size:15px;font-weight:600;margin-bottom:20px;opacity:.85;display:flex;align-items:center;gap:8px}
+  .path-track{position:relative;padding-left:26px}
+  .path-track::before{content:"";position:absolute;left:10px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--color-secondary),rgba(255,255,255,.15))}
+  .path-step{position:relative;padding:0 0 26px 20px;color:rgba(255,255,255,.9)}
+  .path-step:last-child{padding-bottom:0}
+  .path-step::before{content:"";position:absolute;left:-26px;top:2px;width:22px;height:22px;border-radius:50%;background:var(--color-ink);border:2px solid var(--color-secondary);box-shadow:0 0 0 4px rgba(45,212,191,.15)}
+  .path-step.done::before{background:var(--color-secondary)}
+  .path-step b{display:block;font-size:14.5px;font-weight:600}
+  .path-step span{font-size:13px;color:rgba(255,255,255,.6)}
+  .path-badge{position:absolute;right:-14px;bottom:-18px;background:var(--color-accent);color:#fff;padding:12px 18px;border-radius:16px;font-weight:700;font-size:14px;box-shadow:0 14px 30px rgba(234,88,12,.4);display:flex;align-items:center;gap:8px}
+
+  /* Section basics */
+  section{padding:var(--space-7) 0}
+  .section-head{max-width:680px;margin:0 auto var(--space-5);text-align:center}
+  .section-head.left{margin-left:0;text-align:left}
+  .kicker{display:inline-block;color:var(--color-primary);background:var(--color-muted);border:1px solid var(--color-border);padding:6px 14px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:.02em;margin-bottom:16px}
+  .section-head h2{font-size:clamp(26px,3.4vw,40px);line-height:1.15;margin-bottom:14px}
+  .section-head p{color:var(--color-muted-fg);font-size:17px}
+
+  /* reveal animation */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+  .reveal.in{opacity:1;transform:none}
+  .stagger > *{transition-delay:calc(var(--i,0) * 70ms)}
+
+  /* Problem / solution */
+  .compare{display:grid;grid-template-columns:1fr auto 1fr;gap:var(--space-4);align-items:center}
+  .compare-card{background:var(--color-card);border:1px solid var(--color-border);border-radius:var(--radius);padding:var(--space-4);box-shadow:var(--shadow-sm)}
+  .compare-card.before{border-top:4px solid #F87171}
+  .compare-card.after{border-top:4px solid var(--color-primary)}
+  .compare-card h4{font-size:14px;text-transform:uppercase;letter-spacing:.06em;color:var(--color-muted-fg);margin-bottom:14px}
+  .compare-card ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+  .compare-card li{display:flex;gap:10px;font-size:15px;align-items:flex-start}
+  .compare-card.before li svg{color:#F87171;flex-shrink:0;margin-top:2px}
+  .compare-card.after li svg{color:var(--color-primary);flex-shrink:0;margin-top:2px}
+  .compare-arrow{width:52px;height:52px;border-radius:50%;background:var(--color-accent);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md)}
+
+  /* How it works */
+  .steps{
+    display:grid;grid-template-columns:repeat(6,1fr);gap:var(--space-2);position:relative;
+  }
+  .steps::before{content:"";position:absolute;top:34px;left:6%;right:6%;height:2px;background:repeating-linear-gradient(90deg,var(--color-border) 0 8px,transparent 8px 14px);z-index:0}
+  .step{position:relative;z-index:1;background:var(--color-card);border:1px solid var(--color-border);border-radius:var(--radius-sm);padding:20px 16px;text-align:center;box-shadow:var(--shadow-sm)}
+  .step-num{width:40px;height:40px;border-radius:50%;background:var(--color-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:700;margin:0 auto 14px;box-shadow:0 6px 16px rgba(13,148,136,.3)}
+  .step h4{font-size:15px;margin-bottom:6px}
+  .step p{font-size:13px;color:var(--color-muted-fg)}
+
+  /* Feature grid */
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3)}
+  .feature{background:var(--color-card);border:1px solid var(--color-border);border-radius:var(--radius);padding:var(--space-3);transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
+  .feature:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+  .feature-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;color:#fff}
+  .feature h3{font-size:18px;margin-bottom:8px}
+  .feature p{color:var(--color-muted-fg);font-size:14.5px}
+
+  /* Subject routes */
+  .subject-toggle{display:inline-flex;background:var(--color-muted);border:1px solid var(--color-border);border-radius:999px;padding:5px;gap:4px;margin:0 auto var(--space-4);position:relative}
+  .subject-toggle button{position:relative;z-index:1;padding:12px 26px;border-radius:999px;border:none;background:transparent;font-weight:700;font-size:15px;color:var(--color-muted-fg);cursor:pointer;transition:color .25s}
+  .subject-toggle button.active{color:#fff}
+  .subject-toggle .slider{position:absolute;top:5px;bottom:5px;left:5px;width:calc(50% - 5px);border-radius:999px;background:var(--color-chem);transition:transform .3s var(--ease),background .3s var(--ease);z-index:0}
+  .subject-toggle[data-active="bio"] .slider{transform:translateX(100%);background:var(--color-bio)}
+
+  .route-panel{display:none}
+  .route-panel.active{display:block}
+  .route-meta{display:flex;justify-content:center;gap:var(--space-5);margin-bottom:var(--space-4);flex-wrap:wrap;text-align:center}
+  .route-meta div b{display:block;font-family:'Space Grotesk';font-size:22px}
+  .route-meta div span{font-size:13px;color:var(--color-muted-fg)}
+
+  .topic-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .topic-card{
+    position:relative;border-radius:var(--radius);border:1px solid var(--color-border);
+    background:var(--color-card);padding:22px;cursor:pointer;overflow:hidden;
+    transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s;
+    min-height:190px;display:flex;flex-direction:column;
+  }
+  .topic-card:hover,.topic-card:focus-visible{transform:translateY(-5px);box-shadow:var(--shadow-md);border-color:var(--color-secondary)}
+  .topic-card .idx{position:absolute;top:16px;right:18px;font-family:'Space Grotesk';font-weight:700;font-size:26px;color:var(--color-border)}
+  .topic-card .t-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;margin-bottom:16px}
+  .topic-card h4{font-size:15.5px;margin-bottom:8px;line-height:1.3;padding-right:20px}
+  .topic-card .t-face{flex:1;display:flex;flex-direction:column}
+  .topic-card .t-front{display:flex;flex-direction:column;flex:1}
+  .topic-card .t-tag{margin-top:auto;font-size:12.5px;color:var(--color-muted-fg);display:flex;align-items:center;gap:6px}
+  .topic-card .t-back{display:none;font-size:13.5px;color:var(--color-muted-fg);flex:1}
+  .topic-card .t-back b{display:block;color:var(--color-fg);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;font-family:'Space Grotesk'}
+  .topic-card .t-back .result{margin-top:10px}
+  .topic-card.flipped .t-front{display:none}
+  .topic-card.flipped .t-back{display:flex;flex-direction:column}
+  .topic-card .flip-hint{position:absolute;bottom:14px;right:16px;font-size:11px;color:var(--color-muted-fg);opacity:.7;display:flex;align-items:center;gap:4px}
+
+  /* Platform showcase */
+  .showcase{display:grid;grid-template-columns:.95fr 1.05fr;gap:var(--space-6);align-items:center}
+  .mockup{
+    background:linear-gradient(160deg,var(--color-ink) 0%,#0c4b46 100%);border-radius:22px;padding:14px;box-shadow:var(--shadow-lg);
+    position:relative;
+  }
+  .mockup-bar{display:flex;gap:6px;padding:6px 10px 14px}
+  .mockup-bar span{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.25)}
+  .mockup-screen{background:#08211f;border-radius:14px;padding:18px;color:#fff}
+  .mockup-video{aspect-ratio:16/9;border-radius:12px;background:
+    radial-gradient(circle at 30% 30%,rgba(45,212,191,.5),transparent 60%),
+    radial-gradient(circle at 75% 65%,rgba(234,88,12,.35),transparent 55%),
+    linear-gradient(135deg,#0d3d3a,#0a2c2a);
+    display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:16px}
+  .mockup-video .molecule{position:absolute;inset:0}
+  .play-btn{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.15);backdrop-filter:blur(4px);border:1.5px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;color:#fff}
+  .mockup-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:rgba(255,255,255,.7);margin-bottom:14px}
+  .mockup-progress{height:6px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;margin-bottom:16px}
+  .mockup-progress i{display:block;height:100%;width:64%;background:linear-gradient(90deg,var(--color-secondary),var(--color-primary));border-radius:99px}
+  .mockup-chips{display:flex;gap:8px;flex-wrap:wrap}
+  .mockup-chips span{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);padding:7px 12px;border-radius:99px;font-size:12.5px;display:flex;align-items:center;gap:6px}
+  .showcase-list{display:flex;flex-direction:column;gap:22px}
+  .showcase-item{display:flex;gap:16px}
+  .showcase-item .ic{width:44px;height:44px;flex-shrink:0;border-radius:12px;background:var(--color-muted);border:1px solid var(--color-border);display:flex;align-items:center;justify-content:center;color:var(--color-primary)}
+  .showcase-item h4{font-size:16px;margin-bottom:4px}
+  .showcase-item p{color:var(--color-muted-fg);font-size:14.5px}
+
+  /* Diagnostic band */
+  .band{background:linear-gradient(120deg,var(--color-primary),var(--color-primary-dark));border-radius:24px;padding:var(--space-5);color:#fff;display:grid;grid-template-columns:1.2fr .8fr;gap:var(--space-4);align-items:center;position:relative;overflow:hidden}
+  .band::after{content:"";position:absolute;width:320px;height:320px;background:var(--color-secondary);opacity:.18;border-radius:50%;right:-90px;top:-90px}
+  .band h3{font-size:clamp(22px,2.6vw,30px);margin-bottom:10px}
+  .band p{color:rgba(255,255,255,.85);max-width:480px}
+  .band-panel{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);border-radius:16px;padding:20px;position:relative;z-index:1}
+  .band-panel .row{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:10px;color:rgba(255,255,255,.9)}
+  .band-bar{height:8px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden;margin-bottom:14px}
+  .band-bar i{display:block;height:100%;border-radius:99px}
+  .band-bar i.g{width:82%;background:#4ADE80}
+  .band-bar i.y{width:46%;background:#FACC15}
+  .band-bar i.r{width:24%;background:#F87171}
+
+  /* Pricing */
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3);align-items:stretch}
+  .price-card{background:var(--color-card);border:1px solid var(--color-border);border-radius:var(--radius);padding:var(--space-4);display:flex;flex-direction:column;position:relative;transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
+  .price-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+  .price-card.highlight{border:2px solid var(--color-accent);box-shadow:var(--shadow-lg)}
+  .price-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--color-accent);color:#fff;font-size:12.5px;font-weight:700;padding:6px 16px;border-radius:99px;white-space:nowrap}
+  .price-card h3{font-size:19px;margin-bottom:6px}
+  .price-card .desc{color:var(--color-muted-fg);font-size:14px;margin-bottom:20px;min-height:40px}
+  .price-amount{display:flex;align-items:baseline;gap:6px;margin-bottom:6px}
+  .price-amount b{font-family:'Space Grotesk';font-size:38px}
+  .price-amount span{color:var(--color-muted-fg);font-size:14px}
+  .price-old{color:var(--color-muted-fg);font-size:13.5px;margin-bottom:20px}
+  .price-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin:22px 0 28px;flex:1}
+  .price-list li{display:flex;gap:10px;font-size:14.5px;align-items:flex-start}
+  .price-list li svg{color:var(--color-primary);flex-shrink:0;margin-top:2px}
+
+  /* FAQ */
+  .faq{max-width:820px;margin:0 auto}
+  .faq-item{border-bottom:1px solid var(--color-border)}
+  .faq-q{width:100%;text-align:left;background:none;border:none;padding:20px 4px;display:flex;justify-content:space-between;align-items:center;font-family:'Space Grotesk';font-size:16.5px;font-weight:600;cursor:pointer;color:var(--color-fg)}
+  .faq-q svg{transition:transform .3s var(--ease);flex-shrink:0;color:var(--color-primary)}
+  .faq-item.open .faq-q svg{transform:rotate(45deg)}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .35s var(--ease)}
+  .faq-a p{padding:0 4px 20px;color:var(--color-muted-fg);font-size:15px;max-width:680px}
+
+  /* Final CTA */
+  .final-cta{background:linear-gradient(150deg,var(--color-ink),#0c4b46);border-radius:28px;padding:var(--space-6) var(--space-5);text-align:center;color:#fff;position:relative;overflow:hidden}
+  .final-cta::before{content:"";position:absolute;inset:0;background:radial-gradient(600px 300px at 50% 0%,rgba(45,212,191,.25),transparent 70%)}
+  .final-cta h2{font-size:clamp(26px,3.6vw,42px);margin-bottom:14px;position:relative}
+  .final-cta p{color:rgba(255,255,255,.8);max-width:520px;margin:0 auto 30px;position:relative}
+  .final-cta .hero-cta{justify-content:center;position:relative}
+
+  /* Footer */
+  footer{border-top:1px solid var(--color-border);padding:var(--space-5) 0 var(--space-3);color:var(--color-muted-fg);font-size:14px}
+  .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-4)}
+  .footer-grid h5{font-family:'Space Grotesk';color:var(--color-fg);font-size:14px;margin-bottom:14px}
+  .footer-grid ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .footer-grid a{text-decoration:none;color:var(--color-muted-fg);transition:color .2s}
+  .footer-grid a:hover{color:var(--color-primary)}
+  .footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:var(--space-3);border-top:1px solid var(--color-border);flex-wrap:wrap;gap:10px}
+
+  /* Sticky mobile CTA */
+  .mobile-cta{display:none;position:fixed;bottom:0;left:0;right:0;z-index:90;background:rgba(245,252,251,.92);backdrop-filter:blur(10px);border-top:1px solid var(--color-border);padding:12px 16px;box-shadow:0 -8px 20px rgba(6,46,43,.08)}
+
+  @media (max-width:1024px){
+    .hero-inner{grid-template-columns:1fr;gap:var(--space-5)}
+    .hero-visual{max-width:460px}
+    .features{grid-template-columns:repeat(2,1fr)}
+    .topic-grid{grid-template-columns:repeat(2,1fr)}
+    .showcase{grid-template-columns:1fr}
+    .steps{grid-template-columns:repeat(3,1fr);row-gap:24px}
+    .steps::before{display:none}
+    .pricing-grid{grid-template-columns:1fr}
+    .compare{grid-template-columns:1fr;}
+    .compare-arrow{margin:0 auto;transform:rotate(90deg)}
+    .band{grid-template-columns:1fr}
+    .footer-grid{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:720px){
+    .nav-links{display:none}
+    .nav-toggle{display:flex}
+    .nav-actions{display:none}
+    .features{grid-template-columns:1fr}
+    .topic-grid{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr 1fr}
+    .route-meta{gap:var(--space-3)}
+    .mobile-cta{display:block}
+    section{padding:var(--space-6) 0}
+    body{padding-bottom:76px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;scroll-behavior:auto !important}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="container nav">
+    <a href="#top" class="logo">
+      <span class="logo-mark" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 16v6M4.9 4.9l4.2 4.2M14.9 14.9l4.2 4.2M2 12h6M16 12h6M4.9 19.1l4.2-4.2M14.9 9.1l4.2-4.2"/></svg>
+      </span>
+      UMED <span style="color:var(--color-primary)">ONLINE</span>
+    </a>
+    <nav class="nav-links" aria-label="Основная навигация">
+      <a href="#how">Как это работает</a>
+      <a href="#routes">Маршруты</a>
+      <a href="#platform">Платформа</a>
+      <a href="#pricing">Тарифы</a>
+      <a href="#faq">Вопросы</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="#pricing" class="btn btn-outline btn-sm">Тарифы</a>
+      <a href="#pricing" class="btn btn-accent btn-sm">Начать подготовку</a>
+    </div>
+    <button class="nav-toggle" aria-label="Открыть меню">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid-bg" aria-hidden="true"></div>
+    <div class="hero-blob b1" aria-hidden="true"></div>
+    <div class="hero-blob b2" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <div>
+        <span class="eyebrow"><span class="dot"></span> Подготовка к ОРТ · Химия и Биология</span>
+        <h1>От «я не понимаю тему» <br> до <span>уверенного решения</span> заданий ОРТ</h1>
+        <p class="lead">UMED ONLINE — платформа, где ты выбираешь не весь курс, а именно то, что нужно: одну сложную тему, предмет целиком или химию + биологию вместе. Видеоуроки, 3D-визуализации, реальные опыты и проверка знаний — всё внутри платформы.</p>
+        <div class="hero-cta">
+          <a href="#pricing" class="btn btn-accent">Пройти бесплатную диагностику</a>
+          <a href="#routes" class="btn btn-ghost">Смотреть маршруты тем</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><b>18</b><span>тематических разделов</span></div>
+          <div class="stat"><b>8 + 10</b><span>тем химии и биологии</span></div>
+          <div class="stat"><b>24/7</b><span>доступ и поддержка в чате</span></div>
+        </div>
+      </div>
+      <div class="hero-visual reveal">
+        <div class="path-card">
+          <h3>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+            Твой путь по теме
+          </h3>
+          <div class="path-track">
+            <div class="path-step done"><b>Диагностика</b><span>Определяем слабые темы</span></div>
+            <div class="path-step done"><b>Видеоурок</b><span>Понятное объяснение с нуля</span></div>
+            <div class="path-step"><b>3D-визуализация и опыт</b><span>Видишь, как это работает</span></div>
+            <div class="path-step"><b>Практика</b><span>Закрепляешь на заданиях</span></div>
+            <div class="path-step"><b>Проверка знаний</b><span>Тест — понял или нет</span></div>
+          </div>
+        </div>
+        <div class="path-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          Тема закрыта
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM / SOLUTION -->
+  <section aria-labelledby="problem-head">
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">Почему UMED</span>
+        <h2 id="problem-head">Не архив записанных уроков, а система, которая доводит до результата</h2>
+        <p>Обычные курсы продают доступ ко всему сразу. UMED ONLINE закрывает конкретный пробел — ту тему, из-за которой падают баллы на ОРТ.</p>
+      </div>
+      <div class="compare">
+        <div class="compare-card before reveal">
+          <h4>Без системы</h4>
+          <ul>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg> Покупаешь весь курс ради одной сложной темы</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg> Смотришь длинные лекции без структуры</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg> Не понимаешь, усвоил ли тему на самом деле</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg> Вопрос задать некому</li>
+          </ul>
+        </div>
+        <div class="compare-arrow" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <div class="compare-card after reveal">
+          <h4>С UMED ONLINE</h4>
+          <ul>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Покупаешь только нужную тему или предмет</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Короткие уроки, схемы и 3D-визуализации</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Тест после урока показывает реальный результат</li>
+            <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Помощь в чате внутри платформы</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" style="background:var(--color-muted);border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)">
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">Как устроено обучение</span>
+        <h2>Пять шагов от непонимания до уверенности</h2>
+        <p>Каждая тема проходится по одной и той же понятной логике — так ты всегда знаешь, на каком этапе находишься.</p>
+      </div>
+      <div class="steps stagger">
+        <div class="step reveal" style="--i:0">
+          <div class="step-num">1</div>
+          <h4>Диагностика</h4>
+          <p>Находим слабые темы и строим маршрут</p>
+        </div>
+        <div class="step reveal" style="--i:1">
+          <div class="step-num">2</div>
+          <h4>Видеоурок</h4>
+          <p>Короткое и понятное объяснение</p>
+        </div>
+        <div class="step reveal" style="--i:2">
+          <div class="step-num">3</div>
+          <h4>Визуализация</h4>
+          <p>Схемы, 3D-модели, реальные опыты</p>
+        </div>
+        <div class="step reveal" style="--i:3">
+          <div class="step-num">4</div>
+          <h4>Закрепление</h4>
+          <p>Практические задания по теме</p>
+        </div>
+        <div class="step reveal" style="--i:4">
+          <div class="step-num">5</div>
+          <h4>Проверка</h4>
+          <p>Тест показывает, готов ли ты</p>
+        </div>
+        <div class="step reveal" style="--i:5">
+          <div class="step-num">6</div>
+          <h4>Следующая тема</h4>
+          <p>Двигаешься дальше по маршруту</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section aria-labelledby="features-head">
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">Внутри платформы</span>
+        <h2 id="features-head">Всё для настоящего понимания темы</h2>
+        <p>Не просто видео — полноценная система обучения с проверкой и поддержкой.</p>
+      </div>
+      <div class="features stagger">
+        <div class="feature reveal" style="--i:0">
+          <div class="feature-icon" style="background:var(--color-primary)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3z"/></svg>
+          </div>
+          <h3>Короткие видеоуроки</h3>
+          <p>Материал разбит на понятные блоки без «воды» — легко пересмотреть сложный момент.</p>
+        </div>
+        <div class="feature reveal" style="--i:1">
+          <div class="feature-icon" style="background:var(--color-bio)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3c-2 3-2 15 0 18M3 12c3 2 15 2 18 0"/></svg>
+          </div>
+          <h3>3D-визуализации</h3>
+          <p>Молекулы, клетки и процессы, которые невозможно представить по учебнику — теперь видно наглядно.</p>
+        </div>
+        <div class="feature reveal" style="--i:2">
+          <div class="feature-icon" style="background:var(--color-accent)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l1 4H8l1-4Z"/><path d="M7 7h10l2 12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L7 7Z"/><path d="M8 13h8"/></svg>
+          </div>
+          <h3>Реальные опыты</h3>
+          <p>Демонстрации химических реакций и биологических процессов, которые сложно провести в школе.</p>
+        </div>
+        <div class="feature reveal" style="--i:3">
+          <div class="feature-icon" style="background:#8B5CF6">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H7l-3 3V4Z"/><path d="M8 9h8M8 12h5"/></svg>
+          </div>
+          <h3>Понятные схемы</h3>
+          <p>Сложные механизмы и закономерности собраны в наглядные структурированные схемы.</p>
+        </div>
+        <div class="feature reveal" style="--i:4">
+          <div class="feature-icon" style="background:#0EA5E9">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11 12 14l7-7"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg>
+          </div>
+          <h3>Тесты после уроков</h3>
+          <p>Сразу видно, усвоена тема или нет — без иллюзии понимания.</p>
+        </div>
+        <div class="feature reveal" style="--i:5">
+          <div class="feature-icon" style="background:#F59E0B">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg>
+          </div>
+          <h3>Помощь в чате</h3>
+          <p>Возник вопрос — задай его прямо внутри платформы и получи объяснение.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUBJECT ROUTES -->
+  <section id="routes" style="background:var(--color-muted);border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border)">
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">Интерактивные маршруты</span>
+        <h2>Выбери предмет и посмотри свой маршрут по темам</h2>
+        <p>18 разделов: 8 по химии и 10 по биологии. Нажми на карточку, чтобы увидеть проблему и результат по теме.</p>
+      </div>
+
+      <div style="display:flex;justify-content:center">
+        <div class="subject-toggle" id="subjectToggle" data-active="chem">
+          <span class="slider" aria-hidden="true"></span>
+          <button type="button" class="active" data-subject="chem">Химия · 8 тем</button>
+          <button type="button" data-subject="bio">Биология · 10 тем</button>
+        </div>
+      </div>
+
+      <div class="route-meta">
+        <div><b>~6&nbsp;ч</b><span>на весь маршрут</span></div>
+        <div><b>40+</b><span>видеоуроков</span></div>
+        <div><b>100%</b><span>с тестами и разбором</span></div>
+      </div>
+
+      <div class="route-panel active" id="panel-chem">
+        <div class="topic-grid stagger" id="grid-chem"></div>
+      </div>
+      <div class="route-panel" id="panel-bio">
+        <div class="topic-grid stagger" id="grid-bio"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLATFORM SHOWCASE -->
+  <section id="platform">
+    <div class="container">
+      <div class="section-head" style="margin-bottom:var(--space-6)">
+        <span class="kicker">Формат обучения</span>
+        <h2>Учись с телефона или ноутбука — в своём темпе</h2>
+        <p>Смотри урок сейчас, вернись к сложному моменту завтра. UMED ONLINE подстраивается под твой график.</p>
+      </div>
+      <div class="showcase">
+        <div class="mockup reveal">
+          <div class="mockup-bar"><span></span><span></span><span></span></div>
+          <div class="mockup-screen">
+            <div class="mockup-video">
+              <svg class="molecule" width="100%" height="100%" viewBox="0 0 300 170" fill="none" aria-hidden="true">
+                <circle cx="90" cy="60" r="10" fill="#2DD4BF"/>
+                <circle cx="150" cy="40" r="14" fill="#EA580C" opacity=".9"/>
+                <circle cx="190" cy="90" r="9" fill="#5EEAD4"/>
+                <circle cx="130" cy="110" r="7" fill="#fff" opacity=".7"/>
+                <line x1="90" y1="60" x2="150" y2="40" stroke="#5EEAD4" stroke-width="2"/>
+                <line x1="150" y1="40" x2="190" y2="90" stroke="#5EEAD4" stroke-width="2"/>
+                <line x1="150" y1="40" x2="130" y2="110" stroke="#5EEAD4" stroke-width="2"/>
+              </svg>
+              <button class="play-btn" aria-label="Воспроизвести пример урока">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+            </div>
+            <div class="mockup-row"><span>Тема 4 · Строение вещества</span><span>07:42</span></div>
+            <div class="mockup-progress"><i></i></div>
+            <div class="mockup-chips">
+              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg> Конспект</span>
+              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11 12 14l7-7"/><rect x="3" y="4" width="18" height="16" rx="2"/></svg> Тест 8/10</span>
+              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5A8.5 8.5 0 1 1 21 11.5Z"/></svg> Чат</span>
+            </div>
+          </div>
+        </div>
+        <div class="showcase-list">
+          <div class="showcase-item reveal">
+            <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="14" height="16" rx="2"/><path d="M16 8h4a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-4"/></svg></div>
+            <div><h4>Любое устройство</h4><p>Телефон, планшет или ноутбук — прогресс синхронизируется автоматически.</p></div>
+          </div>
+          <div class="showcase-item reveal">
+            <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg></div>
+            <div><h4>Свой темп</h4><p>Проходи по расписанию или без него, пересматривай сложные моменты сколько нужно.</p></div>
+          </div>
+          <div class="showcase-item reveal">
+            <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M3 12h18"/></svg></div>
+            <div><h4>Основа или дополнение</h4><p>Используй как главную подготовку к ОРТ или вместе со школой и репетитором.</p></div>
+          </div>
+          <div class="showcase-item reveal">
+            <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg></div>
+            <div><h4>Ты не один</h4><p>Вопрос по теме — сразу в чат внутри платформы, без поиска ответа на стороне.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="band reveal" style="margin-top:var(--space-6)">
+        <div>
+          <h3>Начни с бесплатной диагностики</h3>
+          <p>5 минут — и ты увидишь, какие темы по химии и биологии просели, а какие уже готовы к ОРТ. Маршрут строится под тебя автоматически.</p>
+          <a href="#pricing" class="btn btn-accent" style="margin-top:18px">Пройти диагностику бесплатно</a>
+        </div>
+        <div class="band-panel" aria-hidden="true">
+          <div class="row"><span>Органическая химия</span><span>82%</span></div>
+          <div class="band-bar"><i class="g"></i></div>
+          <div class="row"><span>Генетика</span><span>46%</span></div>
+          <div class="band-bar"><i class="y"></i></div>
+          <div class="row"><span>Электролиты</span><span>24%</span></div>
+          <div class="band-bar"><i class="r"></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">Тарифы</span>
+        <h2>Плати только за то, что действительно нужно</h2>
+        <p>Одна тема, предмет целиком или химия + биология вместе — выбор за тобой.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card reveal">
+          <h3>Одна тема</h3>
+          <p class="desc">Закрыть конкретный пробел по химии или биологии</p>
+          <div class="price-amount"><b>от 490</b><span>сом / тема</span></div>
+          <p class="price-old">разово, доступ навсегда</p>
+          <ul class="price-list">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Видеоуроки по теме</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Схемы, 3D-визуализации, опыты</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Тест после урока</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Вопрос в чат по теме</li>
+          </ul>
+          <a href="#" class="btn btn-outline btn-block">Выбрать тему</a>
+        </div>
+
+        <div class="price-card highlight reveal">
+          <span class="price-badge">Самый популярный</span>
+          <h3>Один предмет</h3>
+          <p class="desc">Химия или биология — полностью, со всеми разделами</p>
+          <div class="price-amount"><b>от 2 990</b><span>сом</span></div>
+          <p class="price-old">выгоднее покупки тем по отдельности</p>
+          <ul class="price-list">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Все темы предмета (8 или 10)</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Диагностика и персональный маршрут</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Тесты и разбор ошибок по каждой теме</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Приоритетная поддержка в чате</li>
+          </ul>
+          <a href="#" class="btn btn-accent btn-block">Выбрать предмет</a>
+        </div>
+
+        <div class="price-card reveal">
+          <h3>Химия + Биология</h3>
+          <p class="desc">Полная подготовка к ОРТ по обоим предметам</p>
+          <div class="price-amount"><b>от 4 990</b><span>сом</span></div>
+          <p class="price-old">максимальная выгода — оба предмета сразу</p>
+          <ul class="price-list">
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Все 18 разделов платформы</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Единый маршрут подготовки к ОРТ</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Полная статистика прогресса</li>
+            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Поддержка в чате на весь период</li>
+          </ul>
+          <a href="#" class="btn btn-primary btn-block">Оформить полный курс</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="background:var(--color-muted);border-top:1px solid var(--color-border)">
+    <div class="container">
+      <div class="section-head">
+        <span class="kicker">Вопросы</span>
+        <h2>Что нужно знать перед стартом</h2>
+      </div>
+      <div class="faq">
+        <div class="faq-item open">
+          <button class="faq-q" aria-expanded="true">Можно купить только одну тему, а не весь курс?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><p>Да, это основной принцип UMED ONLINE. Ты можешь выбрать одну сложную тему, предмет полностью или сразу химию и биологию — доступ открывается только к тому, что ты оплатил.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Как понять, с какой темы начать?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><p>Перед началом обучения доступна диагностика — короткий тест, который показывает слабые темы и предлагает маршрут по химии и биологии.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Доступ на телефоне работает так же, как на ноутбуке?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><p>Да, платформа полностью адаптирована под мобильные устройства. Прогресс сохраняется и синхронизируется между устройствами.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">UMED заменяет репетитора или школу?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><p>UMED ONLINE можно использовать как основную подготовку к ОРТ или как дополнение к школе, репетитору и другим курсам — в зависимости от твоей ситуации.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">Что если после урока остался вопрос?<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+          <div class="faq-a"><p>Внутри платформы есть чат, где можно задать вопрос по теме и получить объяснение, не выходя за пределы курса.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section>
+    <div class="container">
+      <div class="final-cta">
+        <h2>Готов закрыть пробелы и уверенно сдать ОРТ?</h2>
+        <p>Начни с бесплатной диагностики или сразу выбери тему, предмет или полный курс химия + биология.</p>
+        <div class="hero-cta">
+          <a href="#pricing" class="btn btn-accent">Купить курс</a>
+          <a href="#pricing" class="btn btn-ghost">Пройти диагностику</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="#top" class="logo" style="margin-bottom:12px;display:inline-flex">
+          <span class="logo-mark" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6M12 16v6M4.9 4.9l4.2 4.2M14.9 14.9l4.2 4.2M2 12h6M16 12h6M4.9 19.1l4.2-4.2M14.9 9.1l4.2-4.2"/></svg>
+          </span>
+          UMED ONLINE
+        </a>
+        <p style="max-width:280px">Платформа подготовки к ОРТ по химии и биологии для школьников и будущих абитуриентов медицинских специальностей.</p>
+      </div>
+      <div>
+        <h5>Платформа</h5>
+        <ul>
+          <li><a href="#how">Как это работает</a></li>
+          <li><a href="#platform">Формат обучения</a></li>
+          <li><a href="#faq">Вопросы</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Маршруты</h5>
+        <ul>
+          <li><a href="#routes">Химия · 8 тем</a></li>
+          <li><a href="#routes">Биология · 10 тем</a></li>
+          <li><a href="#pricing">Тарифы</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Поддержка</h5>
+        <ul>
+          <li><a href="#">Чат внутри платформы</a></li>
+          <li><a href="#">support@umed.online</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 UMED ONLINE. Все права защищены.</span>
+      <span>Подготовка к ОРТ · Химия и Биология</span>
+    </div>
+  </div>
+</footer>
+
+<div class="mobile-cta">
+  <a href="#pricing" class="btn btn-accent btn-block">Выбрать тему / тариф</a>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // Scroll reveal
+  var reveals = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, {threshold:0.15});
+    reveals.forEach(function(el){ io.observe(el); });
+  } else {
+    reveals.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  // Topic data
+  var icons = {
+    atom:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="10" ry="4.5"/><ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>',
+    flask:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v6l-6 10a1 1 0 0 0 1 1.5h14a1 1 0 0 0 1-1.5L14 9V3"/><path d="M8 15h8"/></svg>',
+    bond:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="6" r="3"/><path d="M8.5 15.5 15.5 8.5"/></svg>',
+    drop:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2s7 8 7 13a7 7 0 0 1-14 0c0-5 7-13 7-13Z"/></svg>',
+    reaction:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h6M14 12h6M10 12l-2-6M14 12l2 6"/><circle cx="4" cy="12" r="2"/><circle cx="20" cy="12" r="2"/></svg>',
+    metal:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 12h16M12 4v16"/></svg>',
+    hex:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2 21 7v10l-9 5-9-5V7l9-5Z"/></svg>',
+    chain:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="2.5"/><circle cx="12" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><circle cx="19" cy="12" r="2.5"/><path d="M7 11l3.2-3.4M7 13l3.2 3.4M14.2 8.6 17 11M14.2 15.4 17 13"/></svg>',
+    cell:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><circle cx="8" cy="9" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="15" r="1" fill="currentColor" stroke="none"/></svg>',
+    energy:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>',
+    dna:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 3c0 6 10 6 10 12s-10 6-10 12M17 3c0 6-10 6-10 12s10 6 10 12"/><path d="M6.5 6h11M6.5 18h11M7 12h10"/></svg>',
+    genes:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 3c0 6 10 6 10 12s-10 6-10 12" transform="translate(0 -6)"/><circle cx="7" cy="4" r="1.4" fill="currentColor"/><circle cx="17" cy="10" r="1.4" fill="currentColor"/><circle cx="7" cy="16" r="1.4" fill="currentColor"/></svg>',
+    tree:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M12 8 6 4M12 8l6-4M12 14l-7 4M12 14l7 4"/></svg>',
+    leaf:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21c9 0 14-5 14-14V5h-2C8 5 3 10 3 19v2Z"/><path d="M5 21c3-6 7-10 13-13"/></svg>',
+    paw:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="8" r="2"/><circle cx="16" cy="8" r="2"/><circle cx="5" cy="14" r="1.8"/><circle cx="19" cy="14" r="1.8"/><path d="M12 12c-4 0-6 3-6 6a3 3 0 0 0 6 1 3 3 0 0 0 6-1c0-3-2-6-6-6Z"/></svg>',
+    bone:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3c0 .6-.2 1.2-.5 1.6L17.5 17c.4-.3 1-.5 1.6-.5 1.7 0 3 1.3 3 3s-1.3 3-3 3-3-1.3-3-3c0-.6.2-1.2.5-1.6L7.6 8.9c-.4.3-1 .5-1.6.5Z"/></svg>',
+    heart:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>',
+    lungs:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8"/><path d="M12 11c-1 3-4 3-5 5s0 5 2 5 3-2 3-4"/><path d="M12 11c1 3 4 3 5 5s0 5-2 5-3-2-3-4"/></svg>',
+    eco:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 2.5 15.3 0 18M12 3c-2.5 2.7-2.5 15.3 0 18"/></svg>'
+  };
+
+  var chemTopics = [
+    {t:"Строение атома и периодический закон", i:"atom", p:"Путаешься в электронных конфигурациях и не видишь логику таблицы Менделеева", r:"Свободно определяешь строение атома и свойства элементов по положению в таблице"},
+    {t:"Химическая связь и строение вещества", i:"bond", p:"Не различаешь типы связи и не понимаешь, почему вещества ведут себя по-разному", r:"Легко определяешь тип связи и объясняешь свойства вещества по его строению"},
+    {t:"Растворы и электролитическая диссоциация", i:"drop", p:"Теряешься в задачах на концентрацию и диссоциацию электролитов", r:"Уверенно решаешь задачи на растворы и пишешь уравнения диссоциации"},
+    {t:"Химические реакции и закономерности", i:"reaction", p:"Не понимаешь, как расставлять коэффициенты и предсказывать продукт реакции", r:"Быстро балансируешь уравнения и определяешь тип и продукт реакции"},
+    {t:"Неорганическая химия: классы соединений", i:"hex", p:"Путаешь оксиды, кислоты, основания и соли между собой", r:"Чётко классифицируешь неорганические вещества и их свойства"},
+    {t:"Металлы и их соединения", i:"metal", p:"Не помнишь ряд активности и свойства металлов по группам", r:"Предсказываешь реакции металлов и решаешь задачи на сплавы и соединения"},
+    {t:"Органическая химия: углеводороды", i:"chain", p:"Теряешься в номенклатуре и изомерии органических соединений", r:"Свободно называешь и строишь изомеры углеводородов любого класса"},
+    {t:"Кислород- и азотсодержащие соединения", i:"flask", p:"Не видишь связи между строением функциональной группы и свойствами вещества", r:"Определяешь свойства и реакции спиртов, кислот, аминов и белков"}
+  ];
+  var bioTopics = [
+    {t:"Клетка: строение и функции", i:"cell", p:"Не различаешь органоиды клетки и их функции на схемах и рисунках", r:"Уверенно узнаёшь органоиды и объясняешь их роль в жизни клетки"},
+    {t:"Обмен веществ и энергии", i:"energy", p:"Путаешь этапы энергетического обмена и фотосинтеза", r:"Разбираешь этапы метаболизма и решаешь задачи на энергетический обмен"},
+    {t:"Размножение и индивидуальное развитие", i:"leaf", p:"Не понимаешь разницу между митозом, мейозом и стадиями развития организма", r:"Чётко различаешь типы деления клеток и этапы онтогенеза"},
+    {t:"Генетика и закономерности наследственности", i:"genes", p:"Боишься задач на скрещивание и не понимаешь законы Менделя", r:"Решаешь генетические задачи любой сложности с уверенностью"},
+    {t:"Изменчивость и эволюция", i:"dna", p:"Не видишь разницы между формами изменчивости и движущими силами эволюции", r:"Свободно объясняешь механизмы эволюции и виды изменчивости"},
+    {t:"Систематика: бактерии, грибы, растения", i:"tree", p:"Путаешься в классификации и признаках разных царств живой природы", r:"Уверенно классифицируешь организмы по признакам и систематическим группам"},
+    {t:"Систематика животных", i:"paw", p:"Не запоминаешь особенности типов и классов животного мира", r:"Легко определяешь тип и класс животного по ключевым признакам"},
+    {t:"Опорно-двигательная и нервная система", i:"bone", p:"Не понимаешь строение и работу скелета, мышц и нервной регуляции", r:"Разбираешься в анатомии опорно-двигательной и нервной систем"},
+    {t:"Кровообращение, дыхание, пищеварение", i:"heart", p:"Теряешься в схемах кровообращения и работе внутренних систем организма", r:"Понимаешь и объясняешь работу сердечно-сосудистой, дыхательной и пищеварительной систем"},
+    {t:"Экология и основы медицины", i:"eco", p:"Не связываешь экологические закономерности с прикладными медицинскими вопросами", r:"Применяешь знания экологии и физиологии к реальным медицинским ситуациям"}
+  ];
+
+  function buildGrid(container, topics, colorVar){
+    var html = '';
+    topics.forEach(function(item, idx){
+      html += '' +
+      '<div class="topic-card" tabindex="0" role="button" aria-pressed="false" style="--i:'+idx+'">' +
+        '<span class="idx">'+String(idx+1).padStart(2,'0')+'</span>' +
+        '<div class="t-icon" style="background:'+colorVar+'">'+icons[item.i]+'</div>' +
+        '<div class="t-front">' +
+          '<h4>'+item.t+'</h4>' +
+          '<span class="t-tag"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/></svg> Нажми, чтобы узнать больше</span>' +
+        '</div>' +
+        '<div class="t-back">' +
+          '<b>Проблема</b>' +
+          '<span>'+item.p+'</span>' +
+          '<div class="result"><b>Результат</b><span>'+item.r+'</span></div>' +
+        '</div>' +
+      '</div>';
+    });
+    container.innerHTML = html;
+    container.querySelectorAll('.topic-card').forEach(function(card){
+      function toggle(){
+        var flipped = card.classList.toggle('flipped');
+        card.setAttribute('aria-pressed', flipped ? 'true' : 'false');
+      }
+      card.addEventListener('click', toggle);
+      card.addEventListener('keydown', function(ev){
+        if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); toggle(); }
+      });
+    });
+  }
+
+  buildGrid(document.getElementById('grid-chem'), chemTopics, 'var(--color-chem)');
+  buildGrid(document.getElementById('grid-bio'), bioTopics, 'var(--color-bio)');
+
+  document.querySelectorAll('#grid-chem .topic-card, #grid-bio .topic-card').forEach(function(el){
+    el.classList.add('reveal');
+  });
+  if('IntersectionObserver' in window){
+    var io2 = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io2.unobserve(e.target); } });
+    }, {threshold:0.1});
+    document.querySelectorAll('.topic-card.reveal').forEach(function(el){ io2.observe(el); });
+  } else {
+    document.querySelectorAll('.topic-card.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
+
+  // Subject toggle
+  var toggle = document.getElementById('subjectToggle');
+  var panelChem = document.getElementById('panel-chem');
+  var panelBio = document.getElementById('panel-bio');
+  toggle.addEventListener('click', function(ev){
+    var btn = ev.target.closest('button[data-subject]');
+    if(!btn) return;
+    var subj = btn.getAttribute('data-subject');
+    toggle.setAttribute('data-active', subj);
+    toggle.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b === btn); });
+    panelChem.classList.toggle('active', subj === 'chem');
+    panelBio.classList.toggle('active', subj === 'bio');
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(function(item){
+    var q = item.querySelector('.faq-q');
+    var a = item.querySelector('.faq-a');
+    function setState(open){
+      item.classList.toggle('open', open);
+      q.setAttribute('aria-expanded', open ? 'true' : 'false');
+      a.style.maxHeight = open ? a.scrollHeight + 'px' : '0px';
+    }
+    setState(item.classList.contains('open'));
+    q.addEventListener('click', function(){
+      var willOpen = !item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(function(other){
+        if(other !== item){ setState.call(null, false); other.classList.remove('open'); other.querySelector('.faq-q').setAttribute('aria-expanded','false'); other.querySelector('.faq-a').style.maxHeight='0px'; }
+      });
+      setState(willOpen);
+    });
+  });
+
+  // Mobile nav toggle -> reveal links as simple dropdown
+  var navToggle = document.querySelector('.nav-toggle');
+  var navLinks = document.querySelector('.nav-links');
+  if(navToggle){
+    navToggle.addEventListener('click', function(){
+      var isOpen = navLinks.style.display === 'flex';
+      navLinks.style.display = isOpen ? 'none' : 'flex';
+      navLinks.style.cssText += isOpen ? '' : ';position:absolute;top:76px;left:0;right:0;background:var(--color-bg);flex-direction:column;padding:20px 24px;border-bottom:1px solid var(--color-border);gap:18px;';
+      navToggle.setAttribute('aria-expanded', String(!isOpen));
+    });
+  }
+})();
+</script>
+</body>
+</html>
