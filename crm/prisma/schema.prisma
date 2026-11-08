@@ -1,0 +1,406 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Department {
+  LEADERSHIP // полный доступ
+  ADMIN
+  CURATOR
+  MANAGER
+  TEACHER
+  FINANCE
+}
+
+enum Days {
+  MWF // Пн-Ср-Пт
+  TTS // Вт-Чт-Сб
+}
+
+enum Slot {
+  S15 // 15:00–17:00
+  S17 // 17:00–19:00
+  S19 // 19:00–21:00
+}
+
+enum GroupStatus {
+  RECRUITING // идёт набор
+  WAITING // набор закрыт, ждёт старта
+  ACTIVE
+  FINISHED
+}
+
+enum Subject {
+  CHEM
+  BIO
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  EXCUSED // отпросился заранее
+}
+
+enum HomeworkType {
+  EXPERIMENT
+  TEST
+}
+
+enum StudentStatus {
+  ACTIVE
+  LEFT
+}
+
+enum MovementType {
+  TRANSFER
+  LEAVE
+  CHANGE
+  OTHER
+}
+
+enum RiskSource {
+  MANUAL
+  AUTO_ABSENCE
+  AUTO_HOMEWORK
+  FEEDBACK
+}
+
+enum Tone {
+  POSITIVE
+  NEUTRAL
+  NEGATIVE
+}
+
+enum FeedbackStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  UNSOLVABLE
+}
+
+enum TaskStatus {
+  OPEN
+  DONE
+}
+
+model User {
+  id          String     @id @default(cuid())
+  name        String
+  login       String     @unique
+  codeHash    String
+  department  Department
+  isHead      Boolean    @default(false) // руководитель отдела
+  isFull      Boolean    @default(false) // полный доступ
+  permissions String[]   @default([])
+  active      Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+
+  curatedGroups Group[] @relation("curator")
+  chemGroups    Group[] @relation("chem")
+  bioGroups     Group[] @relation("bio")
+  lessons       Lesson[]
+  recipients    NotificationRecipient[]
+}
+
+model Branch {
+  id       String  @id @default(cuid())
+  name     String  @unique
+  isOnline Boolean @default(false)
+  order    Int     @default(0)
+  rooms    Room[]
+  groups   Group[]
+}
+
+model Room {
+  id       String  @id @default(cuid())
+  branchId String
+  branch   Branch  @relation(fields: [branchId], references: [id])
+  name     String
+  capacity Int     @default(22)
+  order    Int     @default(0)
+  groups   Group[]
+  lessons  Lesson[]
+
+  @@unique([branchId, name])
+}
+
+model Group {
+  id              String      @id @default(cuid())
+  name            String
+  description     String      @default("")
+  branchId        String
+  branch          Branch      @relation(fields: [branchId], references: [id])
+  roomId          String?
+  room            Room?       @relation(fields: [roomId], references: [id])
+  days            Days
+  slot            Slot
+  startDate       DateTime    @db.Date
+  months          Int         @default(5)
+  price           Int         @default(9000)
+  status          GroupStatus @default(RECRUITING)
+  chemTeacherId   String?
+  chemTeacher     User?       @relation("chem", fields: [chemTeacherId], references: [id])
+  bioTeacherId    String?
+  bioTeacher      User?       @relation("bio", fields: [bioTeacherId], references: [id])
+  curatorId       String?
+  curator         User?       @relation("curator", fields: [curatorId], references: [id])
+  startCount      Int?        // учеников на старте курса — база удержания
+  recruitClosedAt DateTime?
+  createdById     String?
+  createdAt       DateTime    @default(now())
+
+  students  Student[]
+  lessons   Lesson[]
+  surveys   Survey[]
+  touches   Touch[]
+}
+
+model Student {
+  id                      String        @id @default(cuid())
+  name                    String
+  phone                   String        @default("")
+  parentName              String        @default("")
+  parentPhone             String        @default("")
+  bio                     String        @default("")
+  parentsNotInvolved      Boolean       @default(false)
+  parentsNotInvolvedReason String       @default("")
+  groupId                 String
+  group                   Group         @relation(fields: [groupId], references: [id])
+  status                  StudentStatus @default(ACTIVE)
+  joinedAt                DateTime      @default(now())
+  joinedMonth             Int           @default(1) // месяц курса, в котором пришёл в группу
+  createdAt               DateTime      @default(now())
+
+  attendance Attendance[]
+  homework   Homework[]
+  touches    Touch[]
+  movements  Movement[]
+  risks      Risk[]
+  feedback   Feedback[]
+  payments   Payment[]
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  groupId     String
+  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  index       Int      // 1..months*12
+  courseMonth Int
+  subject     Subject
+  startsAt    DateTime
+  endsAt      DateTime
+  teacherId   String?
+  teacher     User?    @relation(fields: [teacherId], references: [id])
+  roomId      String?
+  room        Room?    @relation(fields: [roomId], references: [id])
+
+  attendance Attendance[]
+  homework   Homework[]
+
+  @@unique([groupId, index])
+}
+
+model Attendance {
+  id         String           @id @default(cuid())
+  studentId  String
+  student    Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  lessonId   String
+  lesson     Lesson           @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  status     AttendanceStatus
+  reason     String           @default("")
+  testScore  Float?           // быстрый тест (офлайн)
+  testMax    Float?
+  note       String           @default("") // онлайн: итог обзвона
+  markedById String?
+  markedAt   DateTime         @default(now())
+
+  @@unique([studentId, lessonId])
+}
+
+model Homework {
+  id           String       @id @default(cuid())
+  studentId    String
+  student      Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  lessonId     String
+  lesson       Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  type         HomeworkType
+  done         Boolean
+  score        Float?
+  maxScore     Float?
+  reason       String       @default("")
+  expectedDate DateTime?    @db.Date
+  markedById   String?
+  markedAt     DateTime     @default(now())
+
+  @@unique([studentId, lessonId, type])
+}
+
+model Touch {
+  id          String   @id @default(cuid())
+  studentId   String
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  groupId     String
+  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  courseMonth Int
+  number      Int      // 1 — после 6-го занятия, 2 — после 12-го
+  awaiting    Boolean  @default(false) // «ожидается ответ»
+  response    String   @default("")
+  byId        String?
+  doneAt      DateTime @default(now())
+
+  @@unique([studentId, groupId, courseMonth, number])
+}
+
+model Movement {
+  id               String       @id @default(cuid())
+  studentId        String
+  student          Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  type             MovementType
+  fromGroupId      String
+  toGroupId        String?
+  courseMonth      Int
+  reasonCategory   String       @default("")
+  reasonVerbatim   String       @default("")
+  curatorAction    String       @default("")
+  links            String       @default("") // ссылки на скриншоты / фото
+  comment          String       @default("")
+  // Атрибуция оттока (ставит полный доступ). null — ещё не проверено.
+  churnCurator     Boolean?
+  churnChem        Boolean?
+  churnBio         Boolean?
+  churnBusiness    Boolean?
+  reviewedById     String?
+  reviewedAt       DateTime?
+  createdById      String
+  createdAt        DateTime     @default(now())
+}
+
+model Risk {
+  id          String     @id @default(cuid())
+  studentId   String
+  student     Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  source      RiskSource
+  reason      String
+  open        Boolean    @default(true)
+  createdById String?
+  createdAt   DateTime   @default(now())
+  closedAt    DateTime?
+  closedById  String?
+  closeNote   String     @default("")
+}
+
+model Feedback {
+  id             String         @id @default(cuid())
+  date           DateTime       @default(now())
+  studentId      String?
+  student        Student?       @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  groupId        String?
+  anonymous      Boolean        @default(false)
+  fromType       String         // родитель / ученик / сотрудник
+  fromStaffId    String?
+  channel        String         @default("")
+  about          String         // о ком/чём
+  aboutStaffId   String?
+  tone           Tone
+  text           String
+  link           String         @default("")
+  churnRisk      Boolean?
+  action         String         @default("")
+  status         FeedbackStatus @default(OPEN)
+  decision       String         @default("")
+  checkDate      DateTime?      @db.Date
+  createdById    String
+  createdAt      DateTime       @default(now())
+}
+
+model Survey {
+  id          String   @id @default(cuid())
+  groupId     String
+  group       Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  courseMonth Int
+  chemPct     Float?
+  bioPct      Float?
+  curatorPct  Float?
+  adminPct    Float?
+  byId        String?
+  createdAt   DateTime @default(now())
+
+  @@unique([groupId, courseMonth])
+}
+
+model Payment {
+  id            String    @id @default(cuid())
+  studentId     String
+  student       Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  groupId       String
+  courseMonth   Int
+  amount        Int
+  paid          Boolean   @default(false)
+  paidAt        DateTime?
+  nonPayReason  String    @default("")
+  expectedDate  DateTime? @db.Date
+  byId          String?
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([studentId, groupId, courseMonth])
+}
+
+// Задачи создаются автоматически (key — уникальный ключ события) или вручную.
+model Task {
+  id           String     @id @default(cuid())
+  key          String     @unique
+  type         String
+  title        String
+  details      String     @default("")
+  department   Department? // задача на весь отдел
+  assigneeId   String?     // или на конкретного человека
+  groupId      String?
+  studentId    String?
+  lessonId     String?
+  link         String     @default("")
+  dueAt        DateTime
+  status       TaskStatus @default(OPEN)
+  manual       Boolean    @default(false) // закрывается кнопкой, а не автоматически
+  doneAt       DateTime?
+  doneById     String?
+  createdAt    DateTime   @default(now())
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  kind        String
+  red         Boolean  @default(false)
+  title       String
+  body        String   @default("")
+  link        String   @default("")
+  ackDueAt    DateTime?
+  createdById String?
+  createdAt   DateTime @default(now())
+  recipients  NotificationRecipient[]
+}
+
+model NotificationRecipient {
+  id             String       @id @default(cuid())
+  notificationId String
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ackAt          DateTime?
+
+  @@unique([notificationId, userId])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  details   String   @default("")
+  createdAt DateTime @default(now())
+}
