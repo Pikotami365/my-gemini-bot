@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <style>
+:root {
+  --bg: #f6f7f9; --card: #fff; --text: #1b1f24; --muted: #667085; --line: #e4e7ec;
+  --accent: #2563eb; --accent-soft: #e8efff; --red: #d92d20; --red-soft: #fee4e2;
+  --green: #079455; --green-soft: #dcfae6; --amber: #b54708; --amber-soft: #fef0c7;
+  --radius: 10px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1 { font-size: 22px; margin: 0 0 12px; }
+h2 { font-size: 17px; margin: 20px 0 10px; }
+h3 { font-size: 15px; margin: 14px 0 8px; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 16px; }
+.top { background: #101828; color: #fff; }
+.top .wrap { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; padding-top: 10px; padding-bottom: 10px; }
+.top a { color: #d0d5dd; font-weight: 500; }
+.top a.active, .top a:hover { color: #fff; text-decoration: none; }
+.brand { font-weight: 700; color: #fff !important; margin-right: 8px; }
+.top .me { margin-left: auto; color: #98a2b3; font-size: 13px; display: flex; gap: 10px; align-items: center; }
+.badge-count { background: var(--red); color: #fff; border-radius: 999px; padding: 0 7px; font-size: 12px; margin-left: 4px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; }
+.grid { display: grid; gap: 14px; }
+.grid.two { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.grid.three { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.muted { color: var(--muted); }
+.small { font-size: 12px; }
+.table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; width: 100%; background: var(--card); }
+th, td { border-bottom: 1px solid var(--line); padding: 7px 8px; text-align: left; vertical-align: top; }
+th { font-size: 12px; color: var(--muted); font-weight: 600; background: #fafbfc; white-space: nowrap; }
+input, select, textarea, button { font: inherit; }
+input, select, textarea { border: 1px solid #d0d5dd; border-radius: 8px; padding: 6px 8px; background: #fff; max-width: 100%; }
+textarea { width: 100%; min-height: 64px; }
+input.num { width: 64px; }
+label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 3px; }
+.field { margin-bottom: 10px; }
+.field input:not([type=checkbox]):not([type=radio]), .field select { width: 100%; }
+button, .btn { border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 8px;
+  padding: 7px 12px; cursor: pointer; font-weight: 600; display: inline-block; }
+button.secondary, .btn.secondary { background: #fff; color: var(--accent); }
+button.danger { background: var(--red); border-color: var(--red); }
+button.small { padding: 3px 9px; font-size: 12px; }
+.pill { display: inline-block; border-radius: 999px; padding: 1px 8px; font-size: 12px; font-weight: 600; background: #f2f4f7; color: #344054; }
+.pill.red { background: var(--red-soft); color: var(--red); }
+.pill.green { background: var(--green-soft); color: var(--green); }
+.pill.amber { background: var(--amber-soft); color: var(--amber); }
+.pill.blue { background: var(--accent-soft); color: var(--accent); }
+.redzone { border-color: #fda29b; background: #fffbfa; }
+.redzone h2 { color: var(--red); margin-top: 0; }
+.item { padding: 9px 0; border-bottom: 1px solid var(--line); }
+.item:last-child { border-bottom: 0; }
+.alert { padding: 10px 12px; border-radius: 8px; margin-bottom: 14px; }
+.alert.error { background: var(--red-soft); color: #7a271a; border: 1px solid #fda29b; }
+.alert.ok { background: var(--green-soft); color: #074d31; border: 1px solid #75e0a7; }
+.tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 14px; border-bottom: 1px solid var(--line); }
+.tabs a { padding: 8px 12px; color: var(--muted); border-bottom: 2px solid transparent; font-weight: 600; }
+.tabs a.active { color: var(--accent); border-color: var(--accent); text-decoration: none; }
+.chess { border-collapse: separate; border-spacing: 6px; background: transparent; }
+.chess th, .chess td { border: 0; padding: 0; }
+.chess th { background: transparent; text-align: center; padding: 4px; }
+.cell { border-radius: 8px; padding: 8px; min-width: 150px; min-height: 64px; border: 1px dashed #d0d5dd; background: #fff; }
+.cell.busy { border: 1px solid #b2ccff; background: var(--accent-soft); }
+.cell.recruit { border: 1px solid #fec84b; background: var(--amber-soft); }
+.cell.wait { border: 1px solid #a6f4c5; background: var(--green-soft); }
+.stat { font-size: 26px; font-weight: 700; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.kpis .card { margin: 0; }
+details > summary { cursor: pointer; color: var(--accent); font-weight: 600; margin: 6px 0; }
+.bar { height: 8px; background: #f2f4f7; border-radius: 999px; overflow: hidden; min-width: 80px; }
+.bar > span { display: block; height: 100%; background: var(--accent); }
+.bar.good > span { background: var(--green); } .bar.bad > span { background: var(--red); } .bar.mid > span { background: #f79009; }
+@media (max-width: 640px) { .wrap { padding: 12px; } .top .me { margin-left: 0; width: 100%; } }
+.loading { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); animation: ld 1s infinite; z-index: 9; }
+@keyframes ld { 0% { opacity: .3 } 50% { opacity: 1 } 100% { opacity: .3 } }
+.top a { cursor: pointer; }
+a[data-link] { cursor: pointer; }
+.toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); max-width: 92%; z-index: 10; box-shadow: 0 4px 16px rgba(0,0,0,.15); }
+</style>
+
+</head>
+<body>
+  <div id="loading" class="loading" style="display:none"></div>
+  <header class="top" id="top" style="display:none"></header>
+  <main class="wrap" id="app"><p class="muted">Загрузка…</p></main>
+  <div id="toast"></div>
+  <script>
+// ───────────── Ядро ─────────────
+var S = { token: '', route: 'home', params: {}, me: null, flash: null };
+try { S.token = localStorage.getItem('umed_token') || ''; } catch (e) {}
+
+function saveToken(t) { S.token = t || ''; try { if (t) localStorage.setItem('umed_token', t); else localStorage.removeItem('umed_token'); } catch (e) {} }
+
+function e(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function $(id) { return document.getElementById(id); }
+
+function call(kind, name, payload) {
+  return new Promise(function (resolve, reject) {
+    google.script.run
+      .withSuccessHandler(function (s) { resolve(JSON.parse(s)); })
+      .withFailureHandler(function (err) { reject(err); })
+      .api(S.token, kind, name, payload || {});
+  });
+}
+
+function loading(on) { $('loading').style.display = on ? 'block' : 'none'; }
+
+function toast(msg, kind) {
+  $('toast').innerHTML = msg ? '<div class="alert toast ' + (kind || 'ok') + '">' + e(msg) + '</div>' : '';
+  if (msg) setTimeout(function () { if ($('toast').textContent === msg) $('toast').innerHTML = ''; }, kind === 'error' ? 7000 : 4000);
+}
+
+function parseLink(link) {
+  var parts = String(link || '').replace(/^#/, '').split('?');
+  var path = parts[0].split('/');
+  var params = {};
+  if (parts[1]) parts[1].split('&').forEach(function (kv) { var p = kv.split('='); params[decodeURIComponent(p[0])] = decodeURIComponent(p[1] || ''); });
+  if (path[1]) params.id = path[1];
+  return { route: path[0] || 'home', params: params };
+}
+
+function linkOf(route, params) {
+  var p = Object.assign({}, params || {});
+  var id = p.id; delete p.id;
+  var q = Object.keys(p).filter(function (k) { return p[k] !== '' && p[k] != null; }).map(function (k) { return encodeURIComponent(k) + '=' + encodeURIComponent(p[k]); }).join('&');
+  return route + (id ? '/' + id : '') + (q ? '?' + q : '');
+}
+
+var ROUTE_VIEW = { home: 'home', schedule: 'schedule', groups: 'groups', group: 'group', student: 'student', feedback: 'feedback',
+  'feedback-new': 'feedbackNew', movements: 'movements', staff: 'staff', reports: 'reports', me: 'me' };
+
+function go(link, push) {
+  var r = typeof link === 'string' ? parseLink(link) : link;
+  S.route = ROUTE_VIEW[r.route] ? r.route : 'home';
+  S.params = r.params || {};
+  if (push !== false) { try { google.script.history.push({ l: linkOf(S.route, S.params) }, null, linkOf(S.route, S.params)); } catch (x) {} }
+  return load();
+}
+
+function load() {
+  if (!S.token) return renderLogin();
+  loading(true);
+  return call('view', ROUTE_VIEW[S.route], S.params).then(function (r) {
+    loading(false);
+    if (r.auth === false) { saveToken(''); return renderLogin(); }
+    if (r.error) { $('app').innerHTML = '<div class="alert error">' + e(r.error) + '</div><p><a data-link="home">На главную</a></p>'; return; }
+    S.me = r.me;
+    renderTop();
+    $('app').innerHTML = (PAGES[S.route] || PAGES.home)(r.data);
+    window.scrollTo(0, 0);
+  }).catch(function (err) {
+    loading(false);
+    $('app').innerHTML = '<div class="alert error">Не удалось загрузить: ' + e(err && err.message || err) + '</div>';
+  });
+}
+
+function formData(form) {
+  var o = {};
+  new FormData(form).forEach(function (v, k) {
+    if (o[k] === undefined) o[k] = v;
+    else if (Array.isArray(o[k])) o[k].push(v);
+    else o[k] = [o[k], v];
+  });
+  return o;
+}
+
+document.addEventListener('click', function (ev) {
+  var a = ev.target.closest('[data-link]');
+  if (a) { ev.preventDefault(); go(a.getAttribute('data-link')); }
+  if (ev.target.closest('[data-logout]')) { ev.preventDefault(); saveToken(''); renderLogin(); }
+});
+
+document.addEventListener('submit', function (ev) {
+  var f = ev.target;
+  ev.preventDefault();
+  if (f.hasAttribute('data-nav')) {
+    var p = formData(f);
+    var base = parseLink(f.getAttribute('data-nav'));
+    return go({ route: base.route, params: Object.assign(base.params, p) });
+  }
+  if (f.hasAttribute('data-login')) {
+    var d = formData(f);
+    loading(true);
+    return call('login', '', d).then(function (r) {
+      loading(false);
+      if (r.error) { $('login-err').innerHTML = '<div class="alert error">' + e(r.error) + '</div>'; return; }
+      saveToken(r.data.token); go('home');
+    }).catch(function (err) { loading(false); $('login-err').innerHTML = '<div class="alert error">' + e(err.message || err) + '</div>'; });
+  }
+  var act = f.getAttribute('data-act');
+  if (!act) return;
+  if (f.hasAttribute('data-confirm') && !confirm(f.getAttribute('data-confirm'))) return;
+  var buttons = f.querySelectorAll('button');
+  buttons.forEach(function (b) { b.disabled = true; });
+  loading(true);
+  call('act', act, formData(f)).then(function (r) {
+    loading(false);
+    buttons.forEach(function (b) { b.disabled = false; });
+    if (r.auth === false) { saveToken(''); return renderLogin(); }
+    if (r.error) return toast(r.error, 'error');
+    var d = r.data || {};
+    var after = d.redirect ? go(d.redirect) : load();
+    after.then(function () {
+      if (d.open && $(d.open)) { $(d.open).open = true; var inp = $(d.open).querySelector('input:not([type=hidden])'); if (inp) inp.focus(); }
+      if (d.msg && d.keep) $('app').insertAdjacentHTML('afterbegin', '<div class="alert ok">' + e(d.msg) + '</div>');
+      else if (d.msg) toast(d.msg);
+    });
+  }).catch(function (err) {
+    loading(false);
+    buttons.forEach(function (b) { b.disabled = false; });
+    toast('Ошибка связи: ' + (err && err.message || err), 'error');
+  });
+});
+
+// ───────────── Общие элементы ─────────────
+function L(link, text, cls) { return '<a data-link="' + e(link) + '"' + (cls ? ' class="' + cls + '"' : '') + '>' + text + '</a>'; }
+function pill(text, cls) { return '<span class="pill ' + (cls || '') + '">' + e(text) + '</span>'; }
+function hidden(n, v) { return '<input type="hidden" name="' + n + '" value="' + e(v) + '">'; }
+function opt(v, label, sel, dis) { return '<option value="' + e(v) + '"' + (sel ? ' selected' : '') + (dis ? ' disabled' : '') + '>' + e(label) + '</option>'; }
+function select(name, items, cur, empty, extra) {
+  return '<select name="' + name + '"' + (extra || '') + '>' + (empty != null ? opt('', empty, !cur) : '') +
+    items.map(function (i) { return opt(i[0], i[1], String(i[0]) === String(cur)); }).join('') + '</select>';
+}
+function barCls(p) { return p == null ? '' : p >= 85 ? 'good' : p < 70 ? 'bad' : 'mid'; }
+function pctBlock(label, p, num, den) {
+  return '<div>' + (label ? '<div class="small muted">' + e(label) + '</div>' : '') +
+    '<div class="row"><b>' + (p == null ? '—' : p + '%') + '</b>' + (den ? '<span class="small muted">' + num + '/' + den + '</span>' : '') + '</div>' +
+    '<div class="bar ' + barCls(p) + '"><span style="width:' + (p || 0) + '%"></span></div></div>';
+}
+function cardH(title, inner, extra) { return '<div class="card' + (extra ? ' ' + extra : '') + '"><h2 style="margin-top:0">' + title + '</h2>' + inner + '</div>'; }
+function table(head, rows, empty, cols) {
+  return '<div class="table-wrap"><table><thead><tr>' + head.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' +
+    (rows.length ? rows.join('') : '<tr><td colspan="' + (cols || head.length) + '" class="muted">' + (empty || 'Пусто') + '</td></tr>') + '</tbody></table></div>';
+}
+var DAYS = [['MWF', 'Пн-Ср-Пт'], ['TTS', 'Вт-Чт-Сб']];
+var SLOTS = [['S15', '15:00–17:00'], ['S17', '17:00–19:00'], ['S19', '19:00–21:00']];
+var DL = { MWF: 'Пн-Ср-Пт', TTS: 'Вт-Чт-Сб' }, SL = { S15: '15:00–17:00', S17: '17:00–19:00', S19: '19:00–21:00' };
+var GSTATUS = { RECRUITING: ['набор', 'amber'], WAITING: ['ждёт старта', 'green'], ACTIVE: ['идёт', 'blue'], FINISHED: ['завершена', ''] };
+var TONE = { POSITIVE: ['Позитив', 'green'], NEUTRAL: ['Нейтрально', ''], NEGATIVE: ['Негатив', 'red'] };
+var FBST = { OPEN: 'Открыт', IN_PROGRESS: 'В работе', RESOLVED: 'Решено', UNSOLVABLE: 'Не решаемо' };
+
+function renderTop() {
+  var m = S.me;
+  var nav = [['home', 'Главная' + (m.badge ? ' <span class="badge-count">' + m.badge + '</span>' : '')], ['schedule', 'Расписание'], ['groups', 'Группы'],
+    ['feedback', 'Отзывы'], ['movements', 'Движения']];
+  if (m.canReports) nav.push(['reports', 'Отчёты']);
+  else if (m.user.department === 'TEACHER' || m.user.department === 'CURATOR') nav.push(['reports', 'Мои показатели']);
+  if (m.showStaff) nav.push(['staff', 'Сотрудники']);
+  $('top').style.display = '';
+  $('top').innerHTML = '<div class="wrap"><a class="brand" data-link="home">UMED</a>' +
+    nav.map(function (n) { return '<a data-link="' + n[0] + '" class="' + (S.route === n[0] ? 'active' : '') + '">' + n[1] + '</a>'; }).join('') +
+    '<span class="me">' + e(m.user.name) + ' · ' + e(m.deptLabel) + ' <a data-link="me">Мой код</a> <button class="small secondary" data-logout>Выйти</button></span></div>';
+}
+
+function renderLogin() {
+  $('top').style.display = 'none';
+  $('app').innerHTML = '<div style="max-width:380px;margin:60px auto 0"><div class="card"><h1>UMED CRM</h1>' +
+    '<p class="muted">Вход по логину и коду. Код выдаёт руководитель.</p><div id="login-err"></div>' +
+    '<form data-login><div class="field"><label>Логин</label><input name="login" autocomplete="username" autocapitalize="none" required></div>' +
+    '<div class="field"><label>Код</label><input name="code" type="password" autocomplete="current-password" required></div>' +
+    '<button type="submit">Войти</button></form></div></div>';
+  return Promise.resolve();
+}
+
+// ───────────── Страницы ─────────────
+var PAGES = {};
+
+PAGES.home = function (d) {
+  var item = function (inner) { return '<div class="item">' + inner + '</div>'; };
+  var ackBtn = function (rid, text, cls) { return '<form data-act="ack" style="margin-left:auto">' + hidden('recipientId', rid) + '<button class="small ' + (cls || '') + '" type="submit">' + text + '</button></form>'; };
+  var doneBtn = function (t) { return t.manual ? '<form data-act="completeTask" style="margin-left:auto">' + hidden('taskId', t.id) + '<button class="small secondary" type="submit">Выполнено</button></form>' : ''; };
+  var red = d.redNotes.length + d.overdue.length + d.risks.length + d.fbOverdue.length + d.unreviewed.length + d.lateAcks.length;
+  var h = '<h1>Здравствуйте, ' + e(d.name) + '</h1>';
+  var z = '';
+  d.redNotes.forEach(function (n) {
+    z += item('<div class="row">' + pill(n.kind === 'risk' ? 'риск' : 'важно', 'red') + ' ' + L(n.link || 'home', '<b>' + e(n.title) + '</b>') +
+      ' <span class="muted small">' + e(n.created) + '</span>' + ackBtn(n.rid, 'Принято, понял(а)') + '</div>' +
+      (n.body ? '<div class="muted small">' + e(n.body) + '</div>' : '') + (n.ackDue ? '<div class="small muted">Подтвердить до ' + e(n.ackDue) + '</div>' : ''));
+  });
+  d.overdue.forEach(function (t) {
+    z += item('<div class="row">' + pill('просрочено', 'red') + ' ' + L(t.link || 'home', e(t.title)) + ' <span class="muted small">срок ' + e(t.due) + '</span>' + doneBtn(t) + '</div>' +
+      (t.details ? '<div class="muted small">' + e(t.details) + '</div>' : ''));
+  });
+  d.lateAcks.forEach(function (n) { z += item(pill('не приняли за 24 ч', 'red') + ' ' + L(n.link || 'home', e(n.title)) + '<div class="small muted">Не подтвердили: ' + e(n.names) + '</div>'); });
+  d.unreviewed.forEach(function (m) { z += item(pill('проверить уход/перевод', 'amber') + ' ' + L('movements', e(m.student)) + ' <span class="muted small">— отметьте, на кого влияет (куратор / преподаватель / бизнес)</span>'); });
+  d.fbOverdue.forEach(function (f) { z += item(pill('отзыв: срок проверки прошёл', 'red') + ' ' + L('feedback?view=control', e(f.student)) + ' <span class="muted small">«' + e(f.text) + '» · срок ' + e(f.check) + '</span>'); });
+  if (d.risks.length) z += '<h3>Ученики в риске (' + d.risks.length + ')</h3>';
+  d.risks.forEach(function (r) { z += item(pill(r.source, 'red') + ' ' + L('student/' + r.studentId, e(r.student)) + ' <span class="muted small">' + e(r.group) + ' · ' + e(r.reason) + '</span>'); });
+  h += '<div class="card ' + (red ? 'redzone' : '') + '"><h2>Красная зона ' + (red ? pill(red, 'red') : pill('всё в порядке', 'green')) + '</h2>' + z + '</div>';
+  var tasks = d.open.map(function (t) {
+    return item('<div class="row">' + L(t.link || 'home', e(t.title)) + ' <span class="muted small">до ' + e(t.due) + '</span>' + doneBtn(t) + '</div>' + (t.details ? '<div class="muted small">' + e(t.details) + '</div>' : ''));
+  }).join('') || '<p class="muted">Открытых задач нет.</p>';
+  var notes = d.notes.map(function (n) {
+    return item('<div class="row">' + L(n.link || 'home', e(n.title)) + ' <span class="muted small">' + e(n.created) + '</span>' + ackBtn(n.rid, 'Принято', 'secondary') + '</div>' + (n.body ? '<div class="muted small">' + e(n.body) + '</div>' : ''));
+  }).join('') || '<p class="muted">Новых уведомлений нет.</p>';
+  h += '<div class="grid two"><div class="card"><h2 style="margin-top:0">Мои задачи (' + d.open.length + ')</h2>' + tasks + '</div>' +
+    '<div class="card"><div class="row"><h2 style="margin-top:0">Уведомления (' + d.notes.length + ')</h2>' +
+    (d.notes.length ? '<form data-act="ackAll" style="margin-left:auto"><button class="small secondary" type="submit">Принять все</button></form>' : '') + '</div>' + notes + '</div></div>';
+  return h;
+};
+
+PAGES.schedule = function (d) {
+  var h = '<h1>Расписание и свободные места</h1><p class="muted small">Синий — группа идёт, жёлтый — идёт набор, зелёный — набор закрыт, ждёт старта. Пустая ячейка — кабинет свободен' +
+    (d.canOpen ? ': нажмите «Открыть набор».' : '.') + ' Редактируют расписание админы на странице группы.</p>';
+  d.branches.forEach(function (b) {
+    var head = '<tr><th></th>' + DAYS.map(function (dd) { return SLOTS.map(function (s) { return '<th>' + dd[1] + '<br>' + s[1] + '</th>'; }).join(''); }).join('') + '</tr>';
+    var rows = (b.isOnline ? [null] : b.rooms).map(function (room) {
+      return '<tr><th>' + e(room ? room.name : 'Онлайн') + '</th>' + DAYS.map(function (dd) {
+        return SLOTS.map(function (s) {
+          var gs = b.groups.filter(function (g) { return g.days === dd[0] && g.slot === s[0] && (b.isOnline || g.roomId === (room && room.id)); });
+          var cls = gs.some(function (g) { return g.status === 'ACTIVE'; }) ? 'busy' : gs.some(function (g) { return g.status === 'RECRUITING'; }) ? 'recruit' : gs.length ? 'wait' : '';
+          var inner = gs.map(function (g) {
+            return '<div style="margin-bottom:6px">' + L('group/' + g.id, '<b>' + e(g.name) + '</b>') + '<div class="small muted">' + GSTATUS[g.status][0] + ' · ' + g.count +
+              (b.isOnline ? '' : '/' + (room ? room.capacity : 22)) + ' уч. · старт ' + e(g.start) + '</div></div>';
+          }).join('');
+          if (d.canOpen && (b.isOnline || !gs.length)) {
+            inner += '<details><summary class="small">Открыть набор</summary><form data-act="openRecruitment">' + hidden('branchId', b.id) + (room ? hidden('roomId', room.id) : '') +
+              hidden('days', dd[0]) + hidden('slot', s[0]) + '<label>Дата старта (' + dd[1] + ')</label><input type="date" name="startDate" value="' + d.nextStart[dd[0]] + '" required>' +
+              '<div style="margin-top:6px"><button class="small" type="submit">Открыть</button></div></form></details>';
+          }
+          if (!gs.length && !d.canOpen) inner = '<span class="muted small">свободно</span>';
+          return '<td><div class="cell ' + cls + '">' + inner + '</div></td>';
+        }).join('');
+      }).join('') + '</tr>';
+    }).join('');
+    h += '<div class="card"><h2 style="margin-top:0">' + e(b.name) + '</h2><div class="table-wrap"><table class="chess"><thead>' + head + '</thead><tbody>' + rows + '</tbody></table></div></div>';
+  });
+  var srows = d.staff.map(function (u) {
+    return '<tr><td>' + e(u.name) + ' <span class="muted small">' + u.dept + '</span></td>' + DAYS.map(function (dd) {
+      return SLOTS.map(function (s) {
+        var here = u.cells[dd[0] + '_' + s[0]] || [];
+        return '<td class="small">' + (here.length ? here.map(function (g) { return '<div>' + L('group/' + g.id, e(g.name)) + '</div>'; }).join('') : pill('свободен', 'green')) + '</td>';
+      }).join('');
+    }).join('') + '</tr>';
+  });
+  var shead = ['Сотрудник'].concat([].concat.apply([], DAYS.map(function (dd) { return SLOTS.map(function (s) { return dd[1] + ' ' + s[1]; }); })));
+  h += cardH('Занятость преподавателей и кураторов', table(shead, srows, 'Сотрудники ещё не добавлены.'));
+  return h;
+};
+
+PAGES.groups = function (d) {
+  var fin = d.finished ? '&status=finished' : '';
+  var h = '<h1>Группы</h1><div class="row" style="margin-bottom:12px">' + L('groups?' + fin.slice(1), 'Все', 'btn ' + (d.branch ? 'secondary' : '')) +
+    d.branches.map(function (b) { return L('groups?branch=' + b.id + fin, e(b.name), 'btn ' + (d.branch === b.id ? '' : 'secondary')); }).join('') +
+    '<span style="margin-left:auto">' + L(d.finished ? 'groups' : 'groups?status=finished', d.finished ? 'Текущие' : 'Завершённые', 'btn secondary') + '</span></div>';
+  var none = function (v) { return v ? e(v) : pill('нет', 'red'); };
+  var rows = d.groups.map(function (g) {
+    return '<tr><td>' + L('group/' + g.id, '<b>' + e(g.name) + '</b>') + (g.risks ? ' ' + pill('риск: ' + g.risks, 'red') : '') + '</td><td>' + e(g.branch) + '</td><td>' + e(g.schedule) +
+      '</td><td>' + e(g.start) + '</td><td>' + g.count + (g.online ? '' : '/22') + '</td><td>' + none(g.chem) + '</td><td>' + none(g.bio) + '</td><td>' + none(g.curator) +
+      '</td><td>' + pill(GSTATUS[g.status][0], GSTATUS[g.status][1]) + '</td></tr>';
+  });
+  return h + '<div class="card" style="padding:0">' + table(['Группа', 'Филиал', 'Расписание', 'Старт', 'Учеников', 'Химия', 'Биология', 'Куратор', 'Статус'], rows, 'Групп нет. Набор открывается в «Расписании».') + '</div>';
+};
+
+PAGES.group = function (g) {
+  var GL = { RECRUITING: 'Идёт набор', WAITING: 'Набор закрыт, ждёт старта', ACTIVE: 'Группа идёт', FINISHED: 'Завершена' };
+  var base = 'group/' + g.id;
+  var h = '<div class="row"><h1 style="margin-bottom:4px">' + e(g.name) + '</h1>' + pill(GL[g.status], 'blue') + '</div>' +
+    '<p class="muted" style="margin-top:0">' + e(g.branch) + (g.room ? ', ' + e(g.room) : '') + ' · ' + g.daysLabel + ' · ' + g.slotLabel + ' · старт ' + g.start + ' · ' + g.months +
+    ' мес. · ' + Number(g.price).toLocaleString('ru-RU') + ' сом/мес' + (g.description ? '<br>' + e(g.description) : '') + '</p>';
+  var tabs = [['overview', 'Состав'], ['attendance', 'Посещаемость'], ['homework', 'ДЗ'], ['touches', 'Касания'], ['survey', 'Опросник'], ['schedule', 'Занятия'], ['history', 'Движения']];
+  h += '<div class="tabs">' + tabs.map(function (t) { return L(base + '?tab=' + t[0], t[1], g.tab === t[0] ? 'active' : ''); }).join('') + '</div>';
+  var sel = g.sel;
+  var picker = function (tab, onlyPast) {
+    return '<div class="row" style="margin-bottom:10px">' + g.monthsList.map(function (m) {
+      return '<span class="row" style="gap:4px"><span class="small muted">Мес. ' + m + ':</span>' + g.lessons.filter(function (l) { return l.month === m && (!onlyPast || l.past); }).map(function (l) {
+        return '<a data-link="' + base + '?tab=' + tab + '&lesson=' + l.index + '" class="pill ' + (sel && l.id === sel.id ? 'blue' : l.past ? 'green' : '') + '" title="' + e(l.when + ' · ' + l.subject) + '">' + l.pos + '</a>';
+      }).join('') + '</span>';
+    }).join('') + '</div>';
+  };
+  var teacherOpts = g.teachers.map(function (t) { return [t.id, t.name]; });
+
+  if (g.tab === 'overview') {
+    h += '<div class="kpis" style="margin-bottom:14px"><div class="card"><div class="small muted">Учеников сейчас</div><div class="stat">' + g.activeCount + (g.online ? '' : '/22') + '</div></div>' +
+      '<div class="card"><div class="small muted">На старте</div><div class="stat">' + (g.startCount == null ? '—' : g.startCount) + '</div></div>' +
+      g.kpis.map(function (k) { return '<div class="card">' + pctBlock(k.label, k.p, k.num, k.den) + '</div>'; }).join('') + '</div>';
+    var team = '<p>Химия: <b>' + e(g.chem || 'не назначен') + '</b><br>Биология: <b>' + e(g.bio || 'не назначен') + '</b><br>Куратор: <b>' + e(g.curator || 'не назначен') + '</b></p>';
+    if (g.can.curator) team += '<form data-act="assignCurator" class="row">' + hidden('groupId', g.id) + select('curatorId', g.curators.map(function (c) { return [c.id, c.name]; }), g.curatorId, '— куратор —') +
+      '<button class="small" type="submit">Назначить куратора</button></form>';
+    if (g.can.org) {
+      team += '<details><summary>Кабинет, преподаватели, расписание (админ)</summary><form data-act="updateGroupOrg">' + hidden('groupId', g.id) + '<div class="grid two">' +
+        (g.online ? '' : '<div class="field"><label>Кабинет</label>' + select('roomId', g.rooms.map(function (r) { return [r.id, r.name]; }), g.roomId) + '</div>') +
+        '<div class="field"><label>Преподаватель химии</label>' + select('chemTeacherId', teacherOpts, g.chemId, '—') + '</div>' +
+        '<div class="field"><label>Преподаватель биологии</label>' + select('bioTeacherId', teacherOpts, g.bioId, '—') + '</div>' +
+        (g.status !== 'ACTIVE' ? '<div class="field"><label>Дни</label>' + select('days', DAYS, g.days) + '</div><div class="field"><label>Время</label>' + select('slot', SLOTS, g.slot) +
+          '</div><div class="field"><label>Дата старта</label><input type="date" name="startDate" value="' + g.startIso + '"></div>' : '') +
+        '</div><p class="small muted">Замена преподавателя применяется ко всем будущим занятиям. Перенос отдельного занятия — во вкладке «Занятия».</p><button type="submit">Сохранить</button></form></details>';
+    }
+    var info = (g.can.roster || g.can.org) ? '<form data-act="updateGroupInfo">' + hidden('groupId', g.id) + '<div class="field"><label>Название</label><input name="name" value="' + e(g.name) + '" required></div>' +
+      '<div class="field"><label>Описание (расписание группы и т.п.)</label><textarea name="description">' + e(g.description) + '</textarea></div><button class="secondary" type="submit">Сохранить</button></form>'
+      : '<p>' + e(g.description || '—') + '</p>';
+    if (g.can.recruit) {
+      info += '<h3>Набор и оплата</h3><div class="row">' +
+        (g.status === 'RECRUITING' ? '<form data-act="closeRecruitment" data-confirm="Закрыть набор? Админы и руководство получат задачи.">' + hidden('groupId', g.id) + '<button type="submit">Набор закончен</button></form>' : '') +
+        (g.status === 'WAITING' ? '<form data-act="reopenRecruitment">' + hidden('groupId', g.id) + '<button class="secondary" type="submit">Вернуть в набор</button></form>' : '') +
+        '<form data-act="updatePrice" class="row">' + hidden('groupId', g.id) + '<input name="price" class="num" style="width:90px" value="' + g.price + '"><span class="small muted">сом/мес</span>' +
+        '<button class="small secondary" type="submit">Сохранить сумму</button></form></div>';
+    }
+    h += '<div class="grid two">' + cardH('Команда группы', team) + cardH('Название и описание', info) + '</div>';
+    var srows = g.students.map(function (s) {
+      return '<tr><td>' + L('student/' + s.id, e(s.name)) + (s.risk ? ' ' + pill('риск', 'red') : '') + (s.lateMonth ? ' ' + pill('с мес. ' + s.lateMonth) : '') + '</td><td>' + e(s.phone) + '</td><td>' + e(s.parentName) +
+        '</td><td>' + e(s.parentPhone) + '</td><td>' + (s.att == null ? '—' : s.att + '%') + '</td><td>' + (s.hw == null ? '—' : s.hw + '%') + '</td><td>' + L('student/' + s.id, 'перевод / уход', 'small') + '</td></tr>';
+    });
+    var add = g.can.roster ? '<details id="add-student"' + (g.students.length ? '' : ' open') + '><summary>Добавить ученика</summary><form data-act="addStudent">' + hidden('groupId', g.id) +
+      '<div class="grid three"><div class="field"><label>ФИО ученика *</label><input name="name" required></div><div class="field"><label>Телефон ученика</label><input name="phone" inputmode="tel"></div>' +
+      '<div class="field"><label>Имя родителя</label><input name="parentName"></div><div class="field"><label>Телефон родителя</label><input name="parentPhone" inputmode="tel"></div></div>' +
+      '<button type="submit">Добавить</button></form></details>' : '';
+    h += cardH('Ученики (' + g.students.length + ')', table(['ФИО', 'Телефон', 'Родитель', 'Тел. родителя', 'Посещ.', 'ДЗ', ''], srows, 'Учеников пока нет.') + add +
+      (g.left.length ? '<p class="small muted">Ушли: ' + e(g.left.join(', ')) + '</p>' : ''));
+  }
+
+  if (g.tab === 'attendance' && sel) {
+    var A = {}; g.selAtt.forEach(function (a) { A[a.studentId] = a; });
+    var notAll = sel.ended && g.students.some(function (s) { return s.joinedBeforeSelEnd && !A[s.id]; });
+    var inner = picker('attendance') + '<h2 style="margin-top:0">Занятие ' + sel.index + ' · ' + sel.subject + ' · ' + sel.when + (sel.teacher ? ' <span class="muted small">· ' + e(sel.teacher) + '</span>' : '') + '</h2>' +
+      (!sel.past ? '<p class="alert ok">Занятие ещё не прошло — можно отметить только «отпросился» с причиной.</p>' : '') +
+      (notAll ? '<p class="alert error">Посещаемость отмечена не у всех — это красная зона.</p>' : '');
+    var L2 = { PRESENT: 'был', ABSENT: 'не был', EXCUSED: 'отпросился' };
+    var list = g.students.filter(function (s) { return s.joinedBeforeSelEnd || !sel.past; });
+    if (g.can.attendance) {
+      var rows = list.map(function (s) {
+        var a = A[s.id] || {};
+        var st = [['EXCUSED', 'отпросился']];
+        if (sel.past) st = [['PRESENT', 'был'], ['ABSENT', 'не был']].concat(st);
+        return '<tr><td>' + hidden('studentId', s.id) + L('student/' + s.id, e(s.name)) + '</td><td>' + select('status_' + s.id, st, a.status, '—') + '</td>' +
+          '<td><input name="reason_' + s.id + '" value="' + e(a.reason) + '" placeholder="причина"></td>' +
+          (g.online ? '<td><input name="note_' + s.id + '" value="' + e(a.note) + '"></td>'
+            : '<td class="row"><input class="num" name="score_' + s.id + '" value="' + e(a.testScore) + '"' + (g.can.quicktest ? '' : ' disabled') + '> / <input class="num" name="max_' + s.id + '" value="' + e(a.testMax) + '"' + (g.can.quicktest ? '' : ' disabled') + '></td>') + '</tr>';
+      });
+      inner += '<form data-act="saveAttendance">' + hidden('lessonId', sel.id) + table(['Ученик', 'Отметка', 'Причина отсутствия', g.online ? 'Примечание (обзвон)' : 'Быстрый тест (балл / из)'], rows) +
+        '<p><button type="submit">Сохранить посещаемость</button></p></form>';
+    } else {
+      inner += table(['Ученик', 'Отметка', 'Причина', g.online ? 'Примечание' : 'Быстрый тест'], list.map(function (s) {
+        var a = A[s.id];
+        return '<tr><td>' + e(s.name) + '</td><td>' + (a ? L2[a.status] : '—') + '</td><td>' + e(a && a.reason) + '</td><td>' + (a ? (g.online ? e(a.note) : (a.testScore != null ? a.testScore + '/' + (a.testMax || '?') : '')) : '') + '</td></tr>';
+      }));
+    }
+    h += '<div class="card">' + inner + '</div>';
+  }
+
+  if (g.tab === 'homework') {
+    var hin = picker('homework', true);
+    if (!sel || !sel.ended) hin += '<p class="muted">ДЗ отмечается после занятия.</p>';
+    else {
+      var H = {}; g.selHw.forEach(function (x) { H[x.studentId + '_' + x.type] = x; });
+      var ro = g.can.homework ? '' : ' disabled';
+      var hrows = g.students.filter(function (s) { return s.joinedBeforeSelEnd; }).map(function (s) {
+        return '<tr><td>' + hidden('studentId', s.id) + L('student/' + s.id, e(s.name)) + '</td>' + ['EXPERIMENT', 'TEST'].map(function (t) {
+          var r = H[s.id + '_' + t] || null, p = t + '_' + s.id;
+          return '<td><div class="row">' + select(p + '_state', [['done', 'сдано'], ['not', 'не сдано']], r ? (r.done ? 'done' : 'not') : '', '—', ro) +
+            (t === 'TEST' ? '<input class="num" name="' + p + '_score" placeholder="балл" value="' + e(r && r.score) + '"' + ro + '> из <input class="num" name="' + p + '_max" placeholder="макс" value="' + e(r && r.maxScore) + '"' + ro + '>' : '') +
+            '</div><div class="row" style="margin-top:4px"><input name="' + p + '_reason" placeholder="причина, если не сдано" value="' + e(r && r.reason) + '"' + ro + '>' +
+            '<input type="date" name="' + p + '_expected" value="' + e(r && r.expected) + '" title="Когда ожидается сдача"' + ro + '></div></td>';
+        }).join('') + '</tr>';
+      });
+      hin += '<h2 style="margin-top:0">ДЗ к занятию ' + sel.index + ' · ' + sel.subject + ' · ' + sel.date + '</h2>' +
+        '<p class="small muted">Срок — до начала следующего занятия. Исправлять можно весь месяц. Не сдано — причина и дата, когда ожидается сдача (в этот день появится задача «принять ДЗ»).</p>' +
+        '<form data-act="saveHomework">' + hidden('lessonId', sel.id) + table(['Ученик', 'Опыт', 'Тест'], hrows) + (g.can.homework ? '<p><button type="submit">Сохранить ДЗ</button></p>' : '') + '</form>';
+    }
+    h += '<div class="card">' + hin + '</div>';
+  }
+
+  if (g.tab === 'touches') {
+    var T = {}; g.touches.forEach(function (t) { T[t.studentId] = t; });
+    var tro = g.can.touch ? '' : ' disabled';
+    var need = g.students.filter(function (s) { return !s.parentsNotInvolved; });
+    var trows = g.students.map(function (s) {
+      var t = T[s.id];
+      return '<tr><td>' + L('student/' + s.id, e(s.name)) + '</td><td>' + e(s.parentName) + ' ' + e(s.parentPhone) + '</td>' +
+        (s.parentsNotInvolved ? '<td colspan="2">' + pill('родители не участвуют') + ' <span class="small muted">' + e(s.parentsReason) + '</span></td>'
+          : '<td>' + hidden('studentId', s.id) + select('state_' + s.id, [['awaiting', 'выполнено, ожидается ответ'], ['answered', 'выполнено, есть ответ']], t ? (t.awaiting ? 'awaiting' : 'answered') : '', 'не выполнено', tro) +
+          '</td><td><textarea name="response_' + s.id + '" style="min-height:38px"' + tro + '>' + e(t && t.response) + '</textarea></td>') + '</tr>';
+    });
+    h += '<div class="card"><div class="row" style="margin-bottom:10px">' + g.monthsList.map(function (m) {
+      return [1, 2].map(function (n) { return L(base + '?tab=touches&month=' + m + '&n=' + n, 'Мес. ' + m + ' · касание ' + n, 'pill ' + (m === g.touchMonth && n === g.touchNumber ? 'blue' : '')); }).join('');
+    }).join('') + '</div><h2 style="margin-top:0">Касание №' + g.touchNumber + ', месяц ' + g.touchMonth + ' — после ' + (g.touchNumber === 1 ? '6-го' : '12-го') + ' занятия</h2>' +
+      '<p class="small muted">Куратор отправляет родителю отчёт по ученику и фиксирует ответ дословно или «ожидается ответ». Цель — 100%.</p>' +
+      '<form data-act="saveTouches">' + hidden('groupId', g.id) + hidden('courseMonth', g.touchMonth) + hidden('number', g.touchNumber) +
+      table(['Ученик', 'Родитель', 'Статус', 'Ответ родителя (дословно)'], trows) +
+      '<p class="small muted">Выполнено: ' + need.filter(function (s) { return T[s.id]; }).length + ' из ' + need.length + '</p>' + (g.can.touch ? '<button type="submit">Сохранить касания</button>' : '') + '</form></div>';
+  }
+
+  if (g.tab === 'survey') {
+    var sro = g.can.survey ? '' : ' disabled';
+    var svrows = g.monthsList.map(function (m) {
+      var s = g.surveys.filter(function (x) { return x.month === m; })[0] || {};
+      return '<tr><td>Месяц ' + m + '</td><td><form data-act="saveSurvey" class="row">' + hidden('groupId', g.id) + hidden('courseMonth', m) +
+        ['chemPct', 'bioPct', 'curatorPct', 'adminPct'].map(function (k, i) {
+          return '<input class="num" name="' + k + '" value="' + e(s[k]) + '" placeholder="' + ['химия', 'биол.', 'кур.', 'адм.'][i] + '"' + sro + '>';
+        }).join('') + (g.can.survey ? '<button class="small secondary" type="submit">Сохранить</button>' : '') + '</form></td></tr>';
+    });
+    h += cardH('Опросник конца месяца', '<p class="small muted">Проводится на последней неделе месяца (11-е или 12-е занятие). Админ вносит готовые проценты: химия · биология · куратор · админ.</p>' + table(['Месяц', 'Химия % · Биология % · Куратор % · Админ %'], svrows));
+  }
+
+  if (g.tab === 'schedule') {
+    var lrows = g.lessons.map(function (l) {
+      return '<tr style="opacity:' + (l.ended ? 0.6 : 1) + '"><td>' + l.index + '</td><td>' + l.month + '</td><td>' + l.subject + '</td><td>' + l.when + '</td><td>' + e(l.teacher || '—') + '</td><td>' + e(l.room || (g.online ? 'онлайн' : '—')) + '</td>' +
+        (g.can.org ? '<td>' + (!l.past ? '<details><summary class="small">изменить</summary><form data-act="rescheduleLesson" class="row">' + hidden('lessonId', l.id) +
+          '<input type="date" name="date" value="' + l.localDate + '"><input type="time" name="time" value="' + l.localTime + '">' + select('teacherId', teacherOpts, l.teacherId, '—') +
+          (g.online ? '' : select('roomId', g.rooms.map(function (r) { return [r.id, r.name]; }), l.roomId)) + '<button class="small" type="submit">OK</button></form></details>' : '') + '</td>' : '') + '</tr>';
+    });
+    h += cardH('Занятия', table(['№', 'Мес.', 'Предмет', 'Дата и время', 'Преподаватель', 'Кабинет'].concat(g.can.org ? ['Перенос / замена'] : []), lrows));
+  }
+
+  if (g.tab === 'history') {
+    var mrows = g.movements.map(function (m) {
+      var t = m.type === 'TRANSFER' ? (m.incoming ? pill('пришёл переводом', 'green') : pill('перевёлся', 'amber')) : m.type === 'LEAVE' ? pill('ушёл', 'red') : pill('изменение');
+      return '<tr><td>' + m.date + '</td><td>' + L('student/' + m.studentId, e(m.student)) + '</td><td>' + t + '</td><td>' + e(m.reason) + '</td><td>' + e(m.verbatim) + '</td><td>' + e(m.action) + '</td></tr>';
+    }).concat(g.newcomers.map(function (s) {
+      return '<tr><td>' + s.date + '</td><td>' + L('student/' + s.id, e(s.name)) + '</td><td>' + pill('новый, мес. ' + s.month, 'green') + '</td><td colspan="3"></td></tr>';
+    }));
+    h += cardH('Кто пришёл и кто ушёл', table(['Дата', 'Ученик', 'Тип', 'Причина', 'Со слов ученика', 'Что сделал куратор'], mrows, 'Движений не было.'));
+  }
+  return h;
+};
+
+PAGES.student = function (s) {
+  var base = 'student/' + s.id;
+  var p = function (r) { return r.den ? Math.round(r.num / r.den * 100) : null; };
+  var h = '<div class="row"><h1 style="margin-bottom:4px">' + e(s.name) + '</h1>' + (s.status === 'LEFT' ? pill('ушёл', 'red') : '') + (s.risks.some(function (r) { return r.open; }) ? pill('в риске', 'red') : '') + '</div>' +
+    '<p class="muted" style="margin-top:0">' + L('group/' + s.groupId, e(s.group)) + ' · ' + e(s.branch) + ' · куратор ' + e(s.curator || '—') + '</p>';
+  h += '<div class="kpis" style="margin-bottom:14px"><div class="card"><div class="small muted">Занятий пройдено / осталось</div><div class="stat">' + s.done + ' / ' + s.left + '</div></div>' +
+    '<div class="card">' + pctBlock('Посещаемость', p(s.att), s.att.num, s.att.den) + '</div><div class="card">' + pctBlock('ДЗ выполнено', p(s.hw), s.hw.num, s.hw.den) + '</div></div>';
+  var TR = { up: pill('↑ растёт', 'green'), down: pill('↓ падает', 'red'), same: pill('= без изменений'), '': '—' };
+  h += cardH('Прогресс по месяцам', table(['Месяц', 'Посещ. химия', 'Посещ. биология', 'ДЗ опыты', 'ДЗ тесты', 'Динамика ДЗ'], s.progress.map(function (m) {
+    return '<tr><td>Месяц ' + m.month + '</td><td>' + m.chem + '</td><td>' + m.bio + '</td><td>' + m.exp + '</td><td>' + m.test + '</td><td>' + TR[m.trend] + '</td></tr>';
+  })));
+  var data = '<form data-act="updateStudent">' + hidden('studentId', s.id);
+  if (s.can.roster) data += '<div class="grid two"><div class="field"><label>ФИО</label><input name="name" value="' + e(s.name) + '"></div><div class="field"><label>Телефон</label><input name="phone" value="' + e(s.phone) + '"></div>' +
+    '<div class="field"><label>Имя родителя</label><input name="parentName" value="' + e(s.parentName) + '"></div><div class="field"><label>Телефон родителя</label><input name="parentPhone" value="' + e(s.parentPhone) + '"></div></div>';
+  else data += '<p>Тел.: ' + e(s.phone || '—') + '<br>Родитель: ' + e(s.parentName || '—') + ' ' + e(s.parentPhone) + '</p>';
+  if (s.can.bio) data += '<div class="field"><label>Биография (заполняет куратор, необязательно)</label><textarea name="bio">' + e(s.bio) + '</textarea></div>';
+  else if (s.bio) data += '<p class="muted">' + e(s.bio) + '</p>';
+  if (s.can.touch) data += '<div class="field">' + hidden('parentsFlag', '1') + '<label><input type="checkbox" name="parentsNotInvolved"' + (s.parentsNotInvolved ? ' checked' : '') + '> Родители не участвуют (касания не нужны)</label>' +
+    select('parentsNotInvolvedReason', [['Нет номера родителя', 'Нет номера родителя'], ['Ученик сам оплачивает', 'Ученик сам оплачивает'], ['Другое', 'Другое']], s.parentsReason, '— причина —') + '</div>';
+  data += ((s.can.roster || s.can.bio || s.can.touch) ? '<button class="secondary" type="submit">Сохранить</button>' : '') + '</form>';
+  var risks = s.risks.map(function (r) {
+    return '<div class="item"><div class="row">' + pill(r.open ? 'открыт' : 'снят', r.open ? 'red' : '') + ' <span class="small muted">' + e(r.source) + ' · ' + r.date + '</span></div><div>' + e(r.reason) + '</div>' +
+      (!r.open && r.closeNote ? '<div class="small muted">Снят: ' + e(r.closeNote) + '</div>' : '') +
+      (r.open && s.can.closeRisk ? '<form data-act="closeRisk" class="row" style="margin-top:4px">' + hidden('riskId', r.id) + '<input name="closeNote" placeholder="что сделано / почему снят"><button class="small secondary" type="submit">Снять риск</button></form>' : '') + '</div>';
+  }).join('') || '<p class="muted">Рисков нет.</p>';
+  if (s.can.risk && s.status === 'ACTIVE') risks += '<form data-act="addRisk" style="margin-top:10px">' + hidden('studentId', s.id) + '<div class="field"><label>Поставить риск — почему?</label><textarea name="reason" required placeholder="например: сомневается, думает перейти на репетитора"></textarea></div><button class="danger" type="submit">Поставить риск</button></form>';
+  h += '<div class="grid two">' + cardH('Данные и биография', data) + cardH('Риски', risks) + '</div>';
+
+  if (s.can.attendance && s.status === 'ACTIVE' && s.upcoming.length) {
+    h += cardH('Отпросился заранее', '<form data-act="markExcused" class="row">' + hidden('studentId', s.id) + select('lessonId', s.upcoming.map(function (l) { return [l.id, l.label]; }), s.upcoming[0].id) +
+      '<input name="reason" placeholder="причина" required><button class="secondary" type="submit">Отметить</button></form>');
+  }
+  if (s.can.move && s.status === 'ACTIVE') {
+    h += '<div class="card" id="actions"><h2 style="margin-top:0">Изменить состав: перевод, уход, другое</h2>' +
+      '<form data-nav="' + base + '" class="row" style="margin-bottom:10px"><span class="small muted">Желаемое время для перевода:</span>' + select('days', DAYS, s.days, 'любые дни') + select('slot', SLOTS, s.slot, 'любое время') +
+      '<button class="small secondary" type="submit">Показать группы</button></form>' +
+      '<form data-act="createMovement" data-confirm="Сохранить изменение? Все получат уведомление.">' + hidden('studentId', s.id) + '<div class="grid two">' +
+      '<div class="field"><label>Действие</label>' + select('type', [['TRANSFER', 'Перевод в другую группу'], ['LEAVE', 'Уход'], ['CHANGE', 'Изменение состава'], ['OTHER', 'Другое']], 'TRANSFER') + '</div>' +
+      '<div class="field"><label>Группа для перевода (свободные места)</label><select name="toGroupId">' + opt('', '—', true) + s.candidates.map(function (c) { return opt(c.id, c.label, false, c.full); }).join('') + '</select></div>' +
+      '<div class="field"><label>Причина</label>' + select('reasonCategory', s.reasons.map(function (r) { return [r, r]; }), '', '—') + '</div>' +
+      '<div class="field"><label>Ссылки на скриншоты / фото</label><input name="links" placeholder="https://…"></div></div>' +
+      '<div class="field"><label>Как написал/сказал ученик — дословно</label><textarea name="reasonVerbatim"></textarea></div>' +
+      '<div class="field"><label>Что сделал куратор (обязательно при уходе)</label><textarea name="curatorAction"></textarea></div>' +
+      '<div class="field"><label>Комментарий</label><input name="comment"></div>' +
+      '<p class="small muted">После сохранения все (админы, менеджеры, кураторы, руководство) получат красное уведомление — его нужно принять в течение 24 часов.</p>' +
+      '<button class="danger" type="submit">Сохранить изменение</button></form></div>';
+  }
+  var AL = { PRESENT: ['был', 'green'], ABSENT: ['не был', 'red'], EXCUSED: ['отпросился', 'amber'] };
+  var att = table(['№', 'Дата', 'Предмет', 'Отметка', 'Причина / тест'], s.attendance.map(function (a) {
+    return '<tr><td>' + a.index + '</td><td>' + a.date + '</td><td>' + a.subject + '</td><td>' + (a.status ? pill(AL[a.status][0], AL[a.status][1]) : '—') + '</td><td class="small">' + e(a.info) + '</td></tr>';
+  }));
+  var cell = function (x) { return !x ? '—' : x.done ? pill('сдано' + (x.score != null ? ' ' + x.score + '/' + (x.max || '?') : ''), 'green') : '<span class="small">' + pill('не сдано', 'red') + ' ' + e(x.reason) + (x.expected ? ' · ждём ' + x.expected : '') + '</span>'; };
+  var hw = table(['№', 'Опыт', 'Тест'], s.homework.map(function (x) { return '<tr><td>' + x.index + '</td><td>' + cell(x.exp) + '</td><td>' + cell(x.test) + '</td></tr>'; }));
+  h += '<div class="grid two">' + cardH('Посещаемость', att) + cardH('ДЗ', hw) + '</div>';
+  var touches = (s.parentsNotInvolved ? '<p>' + pill('родители не участвуют') + ' ' + e(s.parentsReason) + '</p>' : '') + (s.touches.map(function (t) {
+    return '<div class="item"><b>Месяц ' + t.month + ', касание ' + t.number + '</b> · ' + t.date + ' ' + (t.awaiting ? pill('ожидается ответ', 'amber') : pill('ответ получен', 'green')) + (t.response ? '<div class="small">«' + e(t.response) + '»</div>' : '') + '</div>';
+  }).join('') || '<p class="muted">Касаний пока нет.</p>');
+  var fb = s.feedback.map(function (f) { return '<div class="item">' + pill(TONE[f.tone][0], TONE[f.tone][1]) + ' <span class="small muted">' + f.date + ' · ' + e(f.from) + ' · о: ' + e(f.about) + '</span><div class="small">«' + e(f.text) + '»</div></div>'; }).join('') || '<p class="muted">Отзывов нет.</p>';
+  h += '<div class="grid two">' + cardH('Касания с родителями', touches) + '<div class="card"><div class="row"><h2 style="margin-top:0">Отзывы</h2><span style="margin-left:auto">' + L('feedback-new?student=' + s.id, '+ Отзыв', 'btn small') + '</span></div>' + fb + '</div></div>';
+  var MT = { TRANSFER: 'перевод', LEAVE: 'уход', CHANGE: 'изменение', OTHER: 'другое' };
+  h += cardH('История движений', s.movements.map(function (m) {
+    return '<div class="item"><b>' + m.date + '</b> · ' + MT[m.type] + (m.type === 'TRANSFER' ? ': ' + e(m.from) + ' → ' + e(m.to) : '') + ' · ' + e(m.reason) + (m.verbatim ? ' · «' + e(m.verbatim) + '»' : '') +
+      (m.action ? '<div class="small muted">Куратор: ' + e(m.action) + '</div>' : '') + (m.links ? '<div class="small"><a href="' + e(m.links) + '" target="_blank" rel="noreferrer">скриншоты</a></div>' : '') + '</div>';
+  }).join('') || '<p class="muted">Не было.</p>');
+  return h;
+};
+
+PAGES['feedback-new'] = function (d) {
+  var o = function (list) { return list.map(function (x) { return [x, x]; }); };
+  var staff = d.staff.map(function (u) { return [u.id, u.name]; });
+  return '<div class="card" style="max-width:760px"><h1>Новый отзыв</h1><form data-act="createFeedback"><div class="grid two">' +
+    '<div class="field"><label>Дата</label><input type="date" name="date" value="' + d.today + '"></div>' +
+    '<div class="field"><label>Ученик</label>' + select('studentId', d.students.map(function (s) { return [s.id, s.label]; }), d.student, '— не про конкретного ученика —') +
+    '<label style="margin-top:4px"><input type="checkbox" name="anonymous"> анонимно</label></div>' +
+    '<div class="field"><label>От кого</label>' + select('fromType', o(d.from), 'Ученик') + '</div>' +
+    '<div class="field"><label>Если от сотрудника — от какого</label>' + select('fromStaffId', staff, '', '—') + '</div>' +
+    '<div class="field"><label>Канал</label>' + select('channel', o(d.channels), 'Личное сообщение') + '</div>' +
+    '<div class="field"><label>О чём / о ком отзыв</label>' + select('about', o(d.about), d.about[0]) + '</div>' +
+    '<div class="field"><label>Какой сотрудник (если про сотрудника)</label>' + select('aboutStaffId', staff, '', '—') + '</div>' +
+    '<div class="field"><label>Тон</label>' + select('tone', [['POSITIVE', 'Позитив'], ['NEUTRAL', 'Нейтрально'], ['NEGATIVE', 'Негатив']], 'POSITIVE') + '</div>' +
+    '<div class="field"><label>Риск ухода (обязательно при негативе)</label>' + select('churnRisk', [['yes', 'Да, риск'], ['no', 'Нет']], '', '—') + '</div>' +
+    '<div class="field"><label>Срок проверки (для негатива)</label><input type="date" name="checkDate" value="' + d.check + '"></div></div>' +
+    '<div class="field"><label>Отзыв дословно / как отреагировал</label><textarea name="text" required></textarea></div>' +
+    '<div class="field"><label>Что сделано</label><textarea name="action"></textarea></div>' +
+    '<div class="field"><label>Ссылка на скрин</label><input name="link" placeholder="https://…"></div><button type="submit">Сохранить отзыв</button></form></div>';
+};
+
+PAGES.feedback = function (d) {
+  var tone = function (t) { return pill(TONE[t][0], TONE[t][1]); };
+  var h = '<div class="row"><h1>Отзывы</h1><span style="margin-left:auto">' + L('feedback-new', '+ Отзыв', 'btn') + '</span></div><div class="tabs">' +
+    L('feedback', 'Все отзывы', d.view === 'list' ? 'active' : '') + L('feedback?view=summary', 'Сводка', d.view === 'summary' ? 'active' : '') +
+    L('feedback?view=control', 'Контроль (' + d.control.length + ')', d.view === 'control' ? 'active' : '') + '</div>';
+  if (d.view === 'list') {
+    h += '<div class="card" style="padding:0">' + table(['Дата', 'Группа', 'Ученик', 'От кого', 'Канал', 'О чём', 'Тон', 'Риск', 'Отзыв', 'Статус'], d.items.map(function (f) {
+      return '<tr><td>' + f.date + '</td><td>' + e(f.group) + '</td><td>' + (f.studentId ? L('student/' + f.studentId, e(f.student)) : e(f.student)) + '</td><td>' + e(f.from) + '</td><td>' + e(f.channel) +
+        '</td><td>' + e(f.about) + '</td><td>' + tone(f.tone) + '</td><td>' + (f.risk === true ? pill('да', 'red') : f.risk === false ? 'нет' : '') + '</td><td class="small" style="min-width:220px">«' + e(f.text) + '»' +
+        (f.link ? ' <a href="' + e(f.link) + '" target="_blank" rel="noreferrer">скрин</a>' : '') + '</td><td>' + FBST[f.status] + '</td></tr>';
+    }), 'Отзывов пока нет.') + '</div>';
+  }
+  if (d.view === 'summary') {
+    var a = d.summary;
+    var kp = function (label, v, red) { return '<div class="card' + (red ? ' redzone' : '') + '"><div class="small muted">' + label + '</div><div class="stat">' + v + '</div></div>'; };
+    h += '<div class="kpis" style="margin-bottom:14px">' + kp('Всего', a.total) + kp('Позитив', a.pos) + kp('Нейтрально', a.neu) + kp('Негатив', a.neg) +
+      kp('% негатива (красное &gt; 15%)', a.negPct + '%', a.negPct > 15) + kp('Риск ухода / открыто', a.risk + ' / ' + a.open) + '</div>';
+    var tbl = function (title, rows) {
+      return cardH(title, table(['', 'Всего', 'Позитив', 'Негатив', '% негатива', 'Риск ухода', 'Открыто'], rows.map(function (r) {
+        return '<tr><td>' + e(r.key) + '</td><td>' + r.total + '</td><td>' + r.pos + '</td><td>' + r.neg + '</td><td>' + (r.negPct > 15 ? pill(r.negPct + '%', 'red') : r.negPct + '%') + '</td><td>' + r.risk + '</td><td>' + r.open + '</td></tr>';
+      })));
+    };
+    h += tbl('По темам', d.byAbout) + tbl('По группам', d.byGroup);
+  }
+  if (d.view === 'control') {
+    h += '<div class="card"><p class="muted small">На контроле: негатив и риск ухода со статусом «Открыт» / «В работе». Красный срок — проверка просрочена.</p>' +
+      (d.control.length ? d.control.map(function (f) {
+        return '<div class="item"><div class="row">' + tone(f.tone) + (f.risk ? pill('риск ухода', 'red') : '') + ' <b>' + e(f.student) + '</b> <span class="small muted">' + e(f.group) + ' · ' + e(f.about) + ' · ' + f.date + ' · открыто ' + f.daysOpen + ' дн.</span>' +
+          (f.check ? pill('проверка ' + f.check, f.overdue ? 'red' : '') : '') + '</div><div>«' + e(f.text) + '»</div>' +
+          '<form data-act="updateFeedback" class="grid three" style="margin-top:8px">' + hidden('feedbackId', f.id) +
+          '<div class="field"><label>Что сделано</label><input name="action" value="' + e(f.action) + '"></div>' +
+          (d.canDecide ? '<div class="field"><label>Решение руководителя</label><input name="decision" value="' + e(f.decision) + '"></div>' : '') +
+          '<div class="field"><label>Статус</label>' + select('status', Object.keys(FBST).map(function (k) { return [k, FBST[k]]; }), f.status) + '</div>' +
+          '<div class="field"><label>Срок проверки</label><input type="date" name="checkDate" value="' + f.checkIso + '"></div>' +
+          '<div class="field" style="align-self:end"><button class="small" type="submit">Сохранить</button></div></form></div>';
+      }).join('') : '<p>Открытых проблем нет.</p>') + '</div>';
+  }
+  return h;
+};
+
+PAGES.movements = function (d) {
+  var MT = { TRANSFER: ['перевод', 'amber'], LEAVE: ['уход', 'red'], CHANGE: ['изменение', ''], OTHER: ['другое', ''] };
+  var flag = function (n, v) { return select(n, [['yes', 'отток'], ['no', 'не отток']], v === true ? 'yes' : v === false ? 'no' : '', 'не проверено'); };
+  var show = function (v) { return v === true ? pill('отток', 'red') : v === false ? pill('не отток', 'green') : pill('не проверено', 'amber'); };
+  var h = '<h1>Движения учеников: уходы и переводы</h1><p class="muted small">Отметку «отток / не отток» отдельно для куратора, преподавателей и бизнеса ставит руководство с полным доступом — от неё зависит удержание сотрудников. Непроверенный уход считается оттоком.</p>';
+  if (!d.items.length) h += '<div class="card muted">Движений пока нет.</div>';
+  d.items.forEach(function (m) {
+    h += '<div class="card"><div class="row">' + pill(MT[m.type][0], MT[m.type][1]) + ' ' + L('student/' + m.studentId, '<b>' + e(m.student) + '</b>') + ' <span class="muted small">' + m.date + ' · ' + e(m.from) +
+      (m.to ? ' → ' + e(m.to) : '') + ' · мес. ' + m.month + ' · зафиксировал(а) ' + e(m.by) + '</span></div><p style="margin:6px 0"><b>' + e(m.reason || '—') + '</b>' + (m.verbatim ? ' · «' + e(m.verbatim) + '»' : '') +
+      (m.action ? '<br><span class="small">Что сделал куратор: ' + e(m.action) + '</span>' : '') + (m.links ? '<br><a class="small" href="' + e(m.links) + '" target="_blank" rel="noreferrer">скриншоты / фото</a>' : '') + '</p>';
+    if (m.type === 'LEAVE' || m.type === 'TRANSFER') {
+      h += d.isFull ? '<form data-act="reviewMovement" class="row">' + hidden('movementId', m.id) + '<span class="small">Куратор:</span>' + flag('churnCurator', m.churnCurator) +
+        '<span class="small">Химия:</span>' + flag('churnChem', m.churnChem) + '<span class="small">Биология:</span>' + flag('churnBio', m.churnBio) +
+        '<span class="small">Бизнес:</span>' + flag('churnBusiness', m.churnBusiness) + '<button class="small" type="submit">Сохранить</button>' + (m.reviewed ? '<span class="small muted">проверено ' + m.reviewed + '</span>' : '') + '</form>'
+        : '<div class="row small">Куратор ' + show(m.churnCurator) + ' Химия ' + show(m.churnChem) + ' Биология ' + show(m.churnBio) + ' Бизнес ' + show(m.churnBusiness) + '</div>';
+    }
+    h += '</div>';
+  });
+  return h;
+};
+
+PAGES.staff = function (d) {
+  var lbl = function (inner) { return '<label style="display:inline-flex;gap:4px;align-items:center;color:inherit;font-size:12px;margin-right:8px">' + inner + '</label>'; };
+  var h = '<h1>Сотрудники и доступы</h1><p class="muted small">Руководитель отдела добавляет сотрудников своего отдела и включает им разделы. Полный доступ видит всех и назначает руководителей. Код показывается один раз — передайте его сотруднику лично.</p>';
+  h += cardH('Добавить сотрудника', '<form data-act="createStaff"><div class="grid three"><div class="field"><label>Имя</label><input name="name" required></div>' +
+    '<div class="field"><label>Логин (латиница)</label><input name="login" required autocapitalize="none" placeholder="aisha.k"></div><div class="field"><label>Код (пусто — сгенерировать)</label><input name="code"></div>' +
+    '<div class="field"><label>Отдел</label>' + select('department', d.depts.map(function (x) { return [x.code, x.label]; }), d.depts[d.depts.length > 1 ? 1 : 0].code) + '</div>' +
+    (d.isFull ? '<div class="field">' + lbl('<input type="checkbox" name="isHead"> Руководитель отдела') + '<br>' + lbl('<input type="checkbox" name="isFull"> Полный доступ') + '</div>' : '') +
+    '</div><button type="submit">Создать</button></form>');
+  d.depts.forEach(function (dep) {
+    if (!dep.users.length) return;
+    h += cardH(e(dep.label) + ' (' + dep.users.length + ')', dep.users.map(function (u) {
+      var me = u.id === d.meId;
+      return '<div class="item"><form data-act="updateStaff">' + hidden('userId', u.id) + '<div class="row"><input name="name" value="' + e(u.name) + '" style="width:180px"><span class="muted small">логин: ' + e(u.login) + '</span>' +
+        (u.isFull ? pill('полный доступ', 'blue') : '') + (u.isHead ? pill('руководитель', 'green') : '') + (!u.active ? pill('отключён', 'red') : '') + '</div>' +
+        (!u.isFull && dep.grantable.length ? '<div class="row small" style="margin-top:6px">' + dep.grantable.map(function (p) {
+          return lbl('<input type="checkbox" name="perm" value="' + p.key + '"' + (u.permissions.indexOf(p.key) >= 0 ? ' checked' : '') + '> ' + e(p.label));
+        }).join('') + '</div>' : '') +
+        '<div class="row small" style="margin-top:6px">' + (me ? hidden('active', 'on') : lbl('<input type="checkbox" name="active"' + (u.active ? ' checked' : '') + '> активен')) +
+        (d.isFull ? lbl('<input type="checkbox" name="isHead"' + (u.isHead ? ' checked' : '') + '> руководитель отдела') +
+          (me ? hidden('isFull', 'on') : lbl('<input type="checkbox" name="isFull"' + (u.isFull ? ' checked' : '') + '> полный доступ')) : '') +
+        '<button class="small secondary" type="submit">Сохранить</button></div></form>' +
+        (!me ? '<form data-act="resetCode" data-confirm="Выдать новый код? Старый перестанет работать.">' + hidden('userId', u.id) + '<button class="small secondary" type="submit" style="margin-top:6px">Выдать новый код</button></form>' : '') + '</div>';
+    }).join(''));
+  });
+  return h;
+};
+
+PAGES.reports = function (d) {
+  var P = function (x) { return x.p == null ? '<span class="muted">—</span>' : '<div style="min-width:90px">' + pctBlock('', x.p, x.num, x.den) + '</div>'; };
+  var gl = function (gs) { return '<td class="small">' + gs.map(function (g) { return '<div>' + L('group/' + g.id, e(g.name)) + '</div>'; }).join('') + '</td>'; };
+  var h = '<h1>Отчёты и эффективность</h1><div class="row" style="margin-bottom:12px"><span class="small muted">Период для посещаемости, тестов и ДЗ:</span>' +
+    L('reports?period=7', 'неделя', 'btn small ' + (d.period === 7 ? '' : 'secondary')) + L('reports?period=28', 'месяц (28 дней)', 'btn small ' + (d.period === 28 ? '' : 'secondary')) +
+    L('reports', 'весь курс', 'btn small ' + (!d.period ? '' : 'secondary')) + '<span class="small muted">Удержание — на текущий месяц курса каждой группы.</span></div>';
+  if (d.showTeachers && d.teachers.length) {
+    h += cardH('Преподаватели', '<p class="small muted">Оцениваются по посещаемости своих учеников, эффективности (быстрые тесты, офлайн), удержанию и опроснику.</p>' +
+      table(['Преподаватель', 'Группы', 'Посещаемость', 'Эффективность', 'Удержание', 'Опросник'], d.teachers.map(function (t) {
+        return '<tr><td><b>' + e(t.name) + '</b></td>' + gl(t.groups) + '<td>' + P(t.att) + '</td><td>' + P(t.eff) + '</td><td>' + P(t.ret) + '</td><td>' + P(t.survey) + '</td></tr>';
+      })));
+  }
+  if (d.showCurators && d.curators.length) {
+    h += cardH('Кураторы', '<p class="small muted">Оцениваются по выполнению ДЗ (опыты и тесты), удержанию и касаниям (цель 100%).</p>' +
+      table(['Куратор', 'Группы', 'ДЗ опыты', 'ДЗ тесты', 'ДЗ всего', 'Удержание', 'Касания', 'Опросник'], d.curators.map(function (c) {
+        return '<tr><td><b>' + e(c.name) + '</b></td>' + gl(c.groups) + '<td>' + P(c.exp) + '</td><td>' + P(c.test) + '</td><td>' + P(c.total) + '</td><td>' + P(c.ret) + '</td><td>' + P(c.touch) + '</td><td>' + P(c.survey) + '</td></tr>';
+      })));
+  }
+  if (d.business) {
+    h += cardH('Бизнес: удержание по группам', '<p class="small muted">База — ученики на старте курса; пришедшие позже считаются со следующего месяца. Переводы внутри UMED — не отток для бизнеса.</p>' +
+      table(['Группа', 'Филиал', 'Куратор', 'Старт', 'Пришло', 'Ушло', 'Сейчас', '1 мес', '2 мес', '3 мес', '4 мес', '5 мес'], d.business.map(function (g) {
+        return '<tr><td>' + L('group/' + g.id, e(g.name)) + '</td><td>' + e(g.branch) + '</td><td>' + e(g.curator || '—') + '</td><td>' + (g.start == null ? '—' : g.start) + '</td><td>' + g.joined + '</td><td>' + g.left +
+          '</td><td>' + g.now + '</td>' + g.months.map(function (m) { return '<td>' + (m ? P(m) : '') + '</td>'; }).join('') + '</tr>';
+      }), 'Активных групп пока нет.'));
+  }
+  return h;
+};
+
+PAGES.me = function (d) {
+  return '<div class="card" style="max-width:420px"><h1>Мой код входа</h1><p class="muted">Логин: <b>' + e(d.user.login) + '</b></p>' +
+    '<form data-act="changeOwnCode"><div class="field"><label>Текущий код</label><input type="password" name="oldCode" required></div>' +
+    '<div class="field"><label>Новый код</label><input type="password" name="newCode" required minlength="4"></div><button type="submit">Сменить код</button></form></div>';
+};
+
+// ───────────── Запуск ─────────────
+try {
+  google.script.history.setChangeHandler(function (ev) { if (ev.state && ev.state.l) go(ev.state.l, false); });
+  google.script.url.getLocation(function (loc) { go(loc.hash || 'home', false); });
+} catch (x) { go('home', false); }
+</script>
+
+</body>
+</html>

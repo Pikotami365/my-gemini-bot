@@ -29,19 +29,21 @@ type TaskInput = {
   link?: string;
   dueAt: Date;
   manual?: boolean;
+  keepDue?: boolean;
 };
 
 async function ensureTask(t: TaskInput, done: boolean) {
   const existing = await db.task.findUnique({ where: { key: t.key } });
   if (!existing) {
     if (done) return; // нечего создавать — уже выполнено
-    await db.task.create({ data: { ...t, details: t.details ?? "", link: t.link ?? "", manual: t.manual ?? false } });
+    const { keepDue: _k, ...data } = t;
+    await db.task.create({ data: { ...data, details: t.details ?? "", link: t.link ?? "", manual: t.manual ?? false } });
     return;
   }
   // Переназначение (например, сменили куратора) и автозакрытие
   const patch: Prisma.TaskUpdateInput = {};
   if (t.assigneeId !== undefined && existing.assigneeId !== t.assigneeId) patch.assigneeId = t.assigneeId;
-  if (existing.dueAt.getTime() !== t.dueAt.getTime()) patch.dueAt = t.dueAt;
+  if (!t.keepDue && existing.dueAt.getTime() !== t.dueAt.getTime()) patch.dueAt = t.dueAt;
   if (!existing.manual) {
     if (done && existing.status === "OPEN") Object.assign(patch, { status: "DONE", doneAt: new Date() });
     if (!done && existing.status === "DONE") Object.assign(patch, { status: "OPEN", doneAt: null });
@@ -162,7 +164,10 @@ async function runSync(now: Date) {
       ];
       for (const s of steps) {
         const day = addDays(startDay, s.off);
-        if (today >= day) {
+        // Куратора назначили поздно: пропущенные дни 2–3 не создаём, «открыть группу» — со сроком сегодня
+        if (today > day && s.n !== 1) continue;
+        if (today >= day && today < startDay) {
+          const dueDay = today > day ? today : day;
           await ensureTask(
             {
               key: `prestart:${g.id}:${s.n}`,
@@ -172,8 +177,9 @@ async function runSync(now: Date) {
               assigneeId: g.curatorId,
               groupId: g.id,
               link: groupLink,
-              dueAt: localDateTime(day, 23, 59),
+              dueAt: localDateTime(dueDay, 23, 59),
               manual: true,
+              keepDue: true,
             },
             false,
           );

@@ -206,6 +206,9 @@ export async function updateGroupOrg(f: FormData) {
         where: { id: ex.id },
         data: scheduleChanged ? { startsAt: p.startsAt, endsAt: p.endsAt, roomId, teacherId } : { roomId, teacherId },
       });
+    } else if (!ex.teacherId && teacherId) {
+      // Прошедшие занятия без преподавателя (назначили после старта)
+      await db.lesson.update({ where: { id: ex.id }, data: { teacherId } });
     }
   }
   await audit(user.id, "update-group-org", "group", id);
