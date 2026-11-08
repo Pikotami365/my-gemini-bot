@@ -6,24 +6,23 @@
 
 Стек: Next.js 15 + Prisma + PostgreSQL. Уведомления только внутри сайта, внешних интеграций нет.
 
-## Как опубликовать (один раз, ~20 минут)
+## Как опубликовать (≈15 минут, без терминала)
 
-1. **База данных — Supabase** (supabase.com → New project, регион ближе к Бишкеку, например Frankfurt).
-   Запомните пароль базы. Затем: кнопка **Connect → ORMs → Prisma** — там две строки: `DATABASE_URL` и `DIRECT_URL`.
-2. **Создать таблицы и первого пользователя** (на любом компьютере с Node.js 20+):
-   ```bash
-   cd crm
-   cp .env.example .env      # вставьте DATABASE_URL, DIRECT_URL, SESSION_SECRET, ADMIN_LOGIN, ADMIN_CODE
-   npm install
-   npx prisma db push
-   npm run db:seed           # создаст филиалы, по 4 кабинета и пользователя с полным доступом
-   ```
-3. **Сайт — Vercel** (vercel.com → Add New → Project → репозиторий `my-gemini-bot`):
-   - Root Directory: `crm`
-   - Environment Variables: `DATABASE_URL`, `DIRECT_URL`, `SESSION_SECRET` (любая длинная случайная строка)
-   - Deploy. Ссылку на сайт раздайте команде.
-4. Войдите под `ADMIN_LOGIN` / `ADMIN_CODE` → «Сотрудники» → добавьте руководителей отделов
-   (галочка «Руководитель отдела»). Дальше они сами добавляют своих сотрудников.
+1. **Supabase** (supabase.com) → New project. Регион: **Central EU (Frankfurt)**. Придумайте и сохраните пароль базы.
+   Когда проект создастся: кнопка **Connect** вверху → вкладка **ORMs** → **Prisma**. Там две строки:
+   `DATABASE_URL` и `DIRECT_URL`. Замените в них `[YOUR-PASSWORD]` на свой пароль.
+2. **Vercel** (vercel.com) → Add New → Project → Import репозитория `my-gemini-bot`.
+   - **Root Directory:** `crm`
+   - **Environment Variables:**
+     - `DATABASE_URL` — строка из Supabase
+     - `DIRECT_URL` — строка из Supabase
+     - `SESSION_SECRET` — любая длинная случайная строка (например, 40 любых букв и цифр)
+   - **Deploy.** Таблицы в базе создаются автоматически при каждой публикации.
+3. **Откройте ссылку сайта** → появится «Первый запуск» → введите имя, логин и код. Филиалы и кабинеты создадутся сами.
+4. «Сотрудники» → добавьте руководителей отделов (галочка «Руководитель отдела»). Дальше они добавляют своих сотрудников.
+
+Сайт работает в регионе Франкфурт (`vercel.json`) — рядом с базой, поэтому быстро.
+Vercel публикует ветку `main`: изменения попадают на сайт после слияния pull request.
 
 ## Как это работает
 
@@ -42,7 +41,7 @@
 ## Разработка
 
 ```bash
-npm install && npx prisma db push && npm run db:seed
-npm run dev        # http://localhost:3000
+npm install && npx prisma db push
+npm run dev        # http://localhost:3000 → откроется «Первый запуск»
 npm run typecheck
 ```
