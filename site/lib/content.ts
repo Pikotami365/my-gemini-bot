@@ -12,6 +12,8 @@ export type Site = {
   author: string;
   about: string;
   disclaimer: string;
+  /** true — блок «Кратко» виден без регистрации */
+  public_summary?: boolean;
   links?: { label: string; url: string }[];
 };
 
@@ -38,6 +40,7 @@ export type Subject = {
   department?: string;
   teachers?: string[];
   control?: string;
+  color: string;
   demo?: boolean;
   plan: PlanItem[];
   books: Book[];
@@ -57,6 +60,8 @@ export type Note = NoteMeta & {
   terms: { term: string; def: string }[];
   questions: { q: string; a: string }[];
   sources: string[];
+  /** Заголовки разделов — их видят и без регистрации. */
+  outline: string[];
 };
 
 export type ScheduleItem = {
@@ -114,10 +119,19 @@ export function getSubject(slug: string): Subject | null {
     department: raw.department,
     teachers: raw.teachers ?? [],
     control: raw.control,
+    color: raw.color ?? SUBJECT_COLORS[hash(slug) % SUBJECT_COLORS.length],
     demo: raw.demo ?? false,
     plan: (raw.plan ?? []).map((p) => ({ ...p, date: str(p.date) || undefined })),
     books: raw.books ?? [],
   };
+}
+
+const SUBJECT_COLORS = ["#5b3df5", "#ff4f7b", "#10b98a", "#2f8cff", "#ff8a1f"];
+
+function hash(s: string) {
+  let h = 0;
+  for (const ch of s) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return h;
 }
 
 function notesDir(subject: string) {
@@ -147,6 +161,7 @@ export function getNote(subject: string, slug: string): Note | null {
     terms: data.terms ?? [],
     questions: data.questions ?? [],
     sources: data.sources ?? [],
+    outline: [...content.matchAll(/^##\s+(.+)$/gm)].map((m) => m[1].replace(/^\d+\.\s*/, "").trim()),
     html: renderMarkdown(content),
   };
 }
@@ -205,4 +220,33 @@ export function formatDate(iso?: string): string {
     month: "long",
     timeZone: "UTC",
   });
+}
+
+export type DailyQuestion = {
+  q: string;
+  a: string;
+  subjectName: string;
+  color: string;
+  href: string;
+  noteTitle: string;
+};
+
+/** Вопрос дня: один и тот же для всех весь день (по времени Бишкека), меняется в полночь. */
+export function getDailyQuestion(now = new Date()): DailyQuestion | null {
+  const all = getSubjects().flatMap((s) =>
+    getNoteSlugs(s.slug).flatMap((slug) => {
+      const n = getNote(s.slug, slug)!;
+      return n.questions.map((q) => ({
+        q: q.q,
+        a: q.a,
+        subjectName: s.name,
+        color: s.color,
+        href: `/subjects/${s.slug}/${slug}`,
+        noteTitle: n.title,
+      }));
+    }),
+  );
+  if (all.length === 0) return null;
+  const day = Math.floor((now.getTime() + 6 * 3600 * 1000) / 86_400_000);
+  return all[hash(String(day)) % all.length];
 }
