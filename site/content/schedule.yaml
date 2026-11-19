@@ -1,0 +1,26 @@
+# Расписание по дням недели. subject — это папка предмета (например, biochemistry), тогда будет ссылка.
+demo: true            # убрать, когда будет реальное расписание
+updated: "2026-11-19"
+comment: "Пример заполнения."
+days:
+  - day: Понедельник
+    items:
+      - time: "08:00–09:35"
+        subject: biochemistry
+        type: Лекция
+        room: "Ауд. —"
+  - day: Вторник
+    items: []
+  - day: Среда
+    items:
+      - time: "09:45–11:20"
+        subject: biochemistry
+        type: Практика
+        room: "Каб. —"
+        weeks: "чётные недели"
+  - day: Четверг
+    items: []
+  - day: Пятница
+    items: []
+  - day: Суббота
+    items: []
