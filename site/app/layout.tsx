@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "@fontsource-variable/unbounded";
 import "@fontsource-variable/onest";
+import Motion from "@/components/Motion";
 import { getSite } from "@/lib/content";
 import { authConfigured, getUser } from "@/lib/supabase";
 import "./globals.css";
@@ -69,6 +70,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
           </div>
         </header>
+        <Motion />
         <main id="main" className="wrap main">
           {children}
         </main>

@@ -9,6 +9,7 @@ import {
   getSubjects,
   renderMarkdown,
 } from "@/lib/content";
+import ReadingProgress from "@/components/ReadingProgress";
 import { authConfigured, getUser } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
@@ -48,6 +49,7 @@ export default async function NotePage({ params }: Props) {
 
   return (
     <article className="note" style={{ ["--subj" as string]: s.color }}>
+      {unlocked && <ReadingProgress />}
       <nav className="crumbs" aria-label="Путь">
         <Link href="/#subjects">Предметы</Link>
         <span aria-hidden>/</span>

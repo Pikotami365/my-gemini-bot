@@ -61,8 +61,8 @@ export default async function SubjectPage({ params }: Props) {
         {s.plan.length === 0 ? (
           <p className="muted">Темплан ещё не добавлен.</p>
         ) : (
-          <ol className="plan">
-            {s.plan.map((p) => {
+          <ol className="plan" data-reveal>
+            {s.plan.map((p, i) => {
               const has = p.note && notes.has(p.note);
               const inner = (
                 <>
@@ -79,7 +79,7 @@ export default async function SubjectPage({ params }: Props) {
                 </>
               );
               return (
-                <li key={p.n}>
+                <li key={p.n} style={{ ["--i" as string]: i }}>
                   {has ? (
                     <Link href={`/subjects/${s.slug}/${p.note}`} className="plan-row plan-link">
                       {inner}

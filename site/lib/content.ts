@@ -250,3 +250,43 @@ export function getDailyQuestion(now = new Date()): DailyQuestion | null {
   const day = Math.floor((now.getTime() + 6 * 3600 * 1000) / 86_400_000);
   return all[hash(String(day)) % all.length];
 }
+
+/**
+ * Колода для тренировки: вопрос дня первым, остальные перемешаны (порядок свой на каждый день).
+ */
+export function getQuestionDeck(now = new Date(), limit = 30): DailyQuestion[] {
+  const daily = getDailyQuestion(now);
+  if (!daily) return [];
+  const day = Math.floor((now.getTime() + 6 * 3600 * 1000) / 86_400_000);
+  const rest = getSubjects()
+    .flatMap((s) =>
+      getNoteSlugs(s.slug).flatMap((slug) => {
+        const n = getNote(s.slug, slug)!;
+        return n.questions.map((q) => ({
+          q: q.q,
+          a: q.a,
+          subjectName: s.name,
+          color: s.color,
+          href: `/subjects/${s.slug}/${slug}`,
+          noteTitle: n.title,
+        }));
+      }),
+    )
+    .filter((x) => x.q !== daily.q)
+    .map((x) => ({ x, k: hash(`${day}:${x.q}`) }))
+    .sort((a, b) => a.k - b.k)
+    .map(({ x }) => x);
+  return [daily, ...rest].slice(0, limit);
+}
+
+/** Темы и термины для бегущей строки на главной. */
+export function getTickerItems(): { text: string; color: string }[] {
+  const items: { text: string; color: string }[] = [];
+  for (const s of getSubjects()) {
+    for (const p of s.plan) items.push({ text: p.topic, color: s.color });
+    for (const slug of getNoteSlugs(s.slug)) {
+      for (const t of getNote(s.slug, slug)!.terms) items.push({ text: t.term, color: s.color });
+    }
+  }
+  return items;
+}
