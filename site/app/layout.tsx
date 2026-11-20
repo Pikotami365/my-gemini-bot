@@ -77,8 +77,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <footer className="footer">
           <div className="wrap footer-inner">
             <p>{site.disclaimer}</p>
-            <p>
-              © {site.author}, {new Date().getFullYear()}
+            <p className="footer-links">
+              <Link href="/privacy">Данные и приватность</Link>
+              <span>
+                © {site.author}, {new Date().getFullYear()}
+              </span>
             </p>
           </div>
         </footer>

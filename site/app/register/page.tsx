@@ -40,6 +40,9 @@ export default async function RegisterPage({ searchParams }: Props) {
           },
         ]}
       />
+      <p className="auth-consent">
+        Регистрируясь, вы соглашаетесь с тем, <Link href="/privacy">как мы храним данные</Link>.
+      </p>
     </AuthShell>
   );
 }

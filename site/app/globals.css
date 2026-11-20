@@ -414,3 +414,9 @@ thead th { background: color-mix(in srgb, var(--subj) 12%, var(--surface)); font
   .summary, .terms, .quiz details, .table-wrap { box-shadow: none; border: 1px solid #ccc; }
   .callout, .summary, .terms, .table-wrap, .quiz details { break-inside: avoid; }
 }
+
+/* 404 */
+.nf-code { margin: 0 0 4px; font-family: var(--display); font-weight: 700; font-size: 72px; line-height: 1; color: var(--coral); transform: rotate(-4deg); display: inline-block; }
+.auth-consent { font-size: 13px; color: var(--muted); margin: 12px 0 0; }
+.footer-links { display: flex; gap: 16px; }
+.footer-links a { color: var(--muted); }
